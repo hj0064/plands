@@ -1,10 +1,15 @@
 const path = require("path");
 
+// vue.config.js
 module.exports = {
     devServer: {
-        proxy : 'http://localhost:8787'
+        port: 8787,  // 개발 서버 포트 설정
+        proxy: {
+            '/api': {
+                target: 'http://localhost:8080',  // 백엔드 API 서버 주소 (Spring Boot)
+                changeOrigin: true,
+            },
+        },
     },
-    indexPath: '../../templates/vue/index.html',
-    publicPath: '/vue',
-    outputDir: path.resolve(__dirname, "../backend/src/main/resources/static/vue")
-}
+    // 다른 설정 추가 가능
+};

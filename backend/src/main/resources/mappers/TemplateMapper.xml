@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.plands.backend.mapper.TemplateMapper">
+    <resultMap id="roleResultMap" type="com.plands.backend.dto.TemplateDto">
+        <result column="role_sq" property="roleSq" />
+        <result column="role_nm" property="roleNm" />
+    </resultMap>
+
+    <select id="selectAllRoles" resultMap="roleResultMap">
+        SELECT role_sq, role_nm FROM ROLES_TB
+    </select>
+</mapper>
