@@ -6,7 +6,7 @@ module.exports = {
         port: 8787,  // 개발 서버 포트 설정
         proxy: {
             '/api': {
-                target: 'http://localhost:8080',  // 백엔드 API 서버 주소 (Spring Boot)
+                target: 'http://localhost:8081',  // 백엔드 API 서버 주소 (Spring Boot)
                 changeOrigin: true,
             },
         },
