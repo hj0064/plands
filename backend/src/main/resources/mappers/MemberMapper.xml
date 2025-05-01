@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plands.backend.mapper.MemberMapper">
+
+    <select id="findByMemberName" resultType="com.plands.backend.dto.MemberDto">
+        SELECT * FROM member WHERE name = #{name}
+    </select>
+
+    <select id="findByEmail" resultType="com.plands.backend.dto.MemberDto">
+        SELECT * FROM member WHERE email = #{email}
+    </select>
+
+    <select id="findByProviderAndProviderId" resultType="com.plands.backend.dto.MemberDto">
+        SELECT * FROM member WHERE provider = #{provider} AND provider_id = #{providerId}
+    </select>
+
+    <insert id="insertMember" parameterType="com.plands.backend.dto.MemberDto" useGeneratedKeys="true" keyProperty="userSq">
+        INSERT INTO member (name, email, password, nickname, provider, provider_id, role)
+        VALUES (#{name}, #{email}, #{password}, #{name}, #{provider}, #{providerId}, #{role.name})
+    </insert>
+
+</mapper>

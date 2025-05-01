@@ -1,0 +1,105 @@
+.header {
+    font-family: 'Ownglyph_ParkDaHyun', sans-serif;
+    background-color: #ffffff;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e0e0e0;
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 1000; /* 다른 요소들 위에 보이도록 */
+    position: fixed;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%; /* 부모 너비를 채움 */
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0; /* 축소되지 않도록 설정 */
+}
+
+.logo-icon {
+    width: 30px;
+    object-fit: contain; /* 왜곡 방지 */
+    margin-bottom: 5px;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: bold;
+    color: #5b8c61;
+}
+
+.menu-container {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* 각 섹션 사이의 간격 */
+    flex-grow: 1; /* 필요 시 메뉴가 공간을 차지하도록 설정 */
+    justify-content: flex-end; /* 메뉴를 오른쪽에 정렬 */
+}
+
+/* 네비게이션 스타일 */
+.nav {
+    display: flex;
+    align-items: center;
+}
+
+.nav-link {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #333;
+}
+
+.nav-link.active {
+    font-weight: bold;
+    color: #5b8c61;
+}
+
+/* 드롭다운 스타일 */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-button {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    transition: border-color 0.3s ease;
+}
+
+.dropdown-button:hover {
+    border-color: #5b8c61;
+}
+
+.dropdown-content {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    padding: 10px 0;
+}
+
+.dropdown-content .nav-link {
+    display: block;
+    padding: 10px 20px;
+    color: #333;
+}
+
+.dropdown-content .nav-link:hover {
+    background-color: #f1f1f1;
+    color: #5b8c61;
+}

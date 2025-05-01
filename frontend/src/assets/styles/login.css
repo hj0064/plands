@@ -1,0 +1,115 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+}
+
+/* Container */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Main Content */
+.login-main {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+/* Form Container */
+.login-form {
+    background-color: #fff;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.login-form h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Input Group */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 0;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 20px;
+    font-size: 1em;
+    background-color: #F6F6F6;
+}
+.input-field:focus {
+    outline: none; /* 기본 outline 제거 */
+    border-color: #A3C47D; /* 원하는 색상으로 border 색상 변경 */
+    box-shadow: 0 0 5px #A3C47D; /* (선택 사항) 그림자 효과 추가 */
+    background-color: #ffffff;
+}
+/* Sign up Link */
+.signup-link {
+    margin-top: 20px;
+    font-size: 0.9em;
+}
+
+.signup-link a {
+    color: #00C957;
+    text-decoration: none;
+}
+
+/* Social Login */
+.social-login {
+    margin-top: 30px;
+}
+
+.social-login .text {
+    color: #777;
+    margin-bottom: 15px;
+}
+
+.social-icon {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    margin: 0 5px;
+    border-radius: 50%;
+    background-color: #eee;
+    background-size: cover;
+    background-position: center;
+    text-indent: -9999px; /* Screen reader accessibility */
+    overflow: hidden;
+}
+
+/* Social Icon Backgrounds */
+.social-icon.google {
+    background-image: url('../images/icon/google.png');
+}
+
+.social-icon.naver {
+    background-image: url('../images/icon/naver.png');
+}
+
+.social-icon.kakao {
+    background-image: url('../images/icon/kakao.png');
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .login-form {
+        padding: 30px;
+    }
+
+    .login-form h2 {
+        font-size: 1.75em;
+    }
+}

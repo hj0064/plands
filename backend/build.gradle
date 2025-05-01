@@ -24,12 +24,33 @@ repositories {
 }
 
 dependencies {
+    // Spring Boot Web
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // MyBatis
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
-    compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    // Spring Security + OAuth2 Client
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+
+    // JWT for token handling
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // MySQL JDBC Driver
     runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // Lombok for boilerplate code reduction
+    compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+
+    // Development tools
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    // Testing dependencies
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
