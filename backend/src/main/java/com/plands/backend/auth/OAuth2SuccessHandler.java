@@ -13,6 +13,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.PrintWriter;
 import java.util.Optional;
 
 @Component
@@ -36,7 +37,26 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         LOGGER.debug("authentication succeeded and redirect");
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
+    // Cookies 사용
+//    protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+//        Optional<String> cookie = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
+//                .map(Cookie::getValue);
+//        String targetUrl = cookie.orElse(getDefaultTargetUrl());
+//
+//        JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
+//
+//        String accessToken = jwtToken.getAccessToken();
+//        String refreshToken = jwtToken.getRefreshToken();
+//
+//        // ✅ 쿠키로 토큰 저장 (JS에서 접근 가능하게 HttpOnly false)
+//        CookieUtils.addCookie(response, "accessToken", accessToken, 60 * 60); // 1시간
+//        CookieUtils.addCookie(response, "refreshToken", refreshToken, 7 * 24 * 60 * 60); // 7일
+//
+//        return UriComponentsBuilder.fromUriString(targetUrl)
+//                .build().toUriString(); // ❌ 더 이상 토큰은 URL에 포함하지 않음
+//    }
 
+    @Override
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         Optional<String> cookie = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue);
@@ -47,6 +67,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String accessToken = jwtToken.getAccessToken();
         String refreshToken = jwtToken.getRefreshToken();
 
+        // 토큰을 URL에 쿼리파라미터로 추가
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("accessToken", accessToken)
                 .queryParam("refreshToken", refreshToken)

@@ -1,10 +1,12 @@
 package com.plands.backend.controller;
 
+import com.plands.backend.auth.CookieUtils;
 import com.plands.backend.auth.JwtToken;
 import com.plands.backend.auth.JwtTokenProvider;
 import com.plands.backend.dto.MemberDto;
 import com.plands.backend.service.MemberServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -77,14 +79,21 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletRequest request) {
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
         // 클라이언트가 보내는 Authorization 헤더에서 JWT 추출
         String token = jwtTokenProvider.resolveAccessToken(request);
 
         if (token != null && jwtTokenProvider.validateToken(token)) {
-            // 필요 시 블랙리스트에 저장하거나 로그 기록
+            // JWT가 유효하다면, 블랙리스트에 추가하거나 로그 기록
+            // 예를 들어, 블랙리스트에 추가 (optional)
+            //jwtTokenProvider.addToBlacklist(token);  // 블랙리스트 추가 (이 부분은 구현에 따라 다름)
         }
 
+        // 클라이언트의 쿠키에서 JWT 삭제
+        CookieUtils.deleteCookie(request, response, "accessToken");
+        CookieUtils.deleteCookie(request, response, "refreshToken");
+
+        // 로그아웃 완료
         return ResponseEntity.ok().build();
     }
 }

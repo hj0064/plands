@@ -25,6 +25,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/api/auth/signup",
             "/api/auth/login",
             "/api/auth/logout",
+            "/api/auth/refresh-token",
             "/oauth2/**",
             "/login",
             "/login/**"
@@ -42,7 +43,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         return false; // 필터 실행
     }
-    // TODO: refreshtoken이 발급이 안되는디
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String accessToken = jwtTokenProvider.resolveAccessToken(request);

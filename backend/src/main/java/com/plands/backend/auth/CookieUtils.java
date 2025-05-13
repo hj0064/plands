@@ -25,6 +25,7 @@ public class CookieUtils  {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
         cookie.setMaxAge(maxAge);
+        cookie.setSecure(true); // HTTPS 환경에서만 허용 (개발 시엔 false 가능)
         cookie.setHttpOnly(true);
         response.addCookie(cookie);
     }

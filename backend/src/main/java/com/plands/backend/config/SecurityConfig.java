@@ -66,14 +66,23 @@ public class SecurityConfig {
                             }
                         })
                 )
-                .oauth2Login(oauth2 ->
-                        oauth2
-                                .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
-                                .successHandler(oAuth2SuccessHandler)
-                                .failureHandler(oAuth2FailureHandler)
+                .oauth2Login(oauth2 -> oauth2
+                        .authorizationEndpoint(endpoint ->
+                                endpoint.baseUri("/oauth2/authorize")
+                                        .authorizationRequestRepository(cookieOAuth2AuthorizationRequestRepository())
+                        )
+                        .redirectionEndpoint(endpoint ->
+                                endpoint.baseUri("/login/oauth2/code/*")
+                        )
+                        .userInfoEndpoint(userInfo ->
+                                userInfo.userService(customOAuth2UserService)
+                        )
+                        .successHandler(oAuth2SuccessHandler)
+                        .failureHandler(oAuth2FailureHandler)
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), OAuth2LoginAuthenticationFilter.class)
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/auth/login", "/api/auth/signup"))
+                .csrf(csrf -> csrf.disable())
+                //.csrf(csrf -> csrf.ignoringRequestMatchers("/api/auth/login", "/api/auth/signup"))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
         return http.build();

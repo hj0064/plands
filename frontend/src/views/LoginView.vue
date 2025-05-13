@@ -17,11 +17,11 @@
         </form>
         <div class="social-login">
           <p class="social-login text">Or continue with</p>
-          <a class="social-icon google" href="http://localhost:8081/oauth2/authorize/google?redirect_uri=http://localhost:8787/oauth2/redirect">
+          <a class="social-icon google" href="http://localhost:8081/oauth2/authorize/google?redirect_uri=http://localhost:8082/oauth2/redirect">
           </a>
-          <a class="social-icon naver" href="http://localhost:8081/oauth2/authorize/naver?redirect_uri=http://localhost:8787/oauth2/redirect">
+          <a class="social-icon naver" href="http://localhost:8081/oauth2/authorize/naver?redirect_uri=http://localhost:8082/oauth2/redirect">
           </a>
-          <a class="social-icon kakao" href="http://localhost:8081/oauth2/authorize/kakao?redirect_uri=http://localhost:8787/oauth2/redirect">
+          <a class="social-icon kakao" href="http://localhost:8081/oauth2/authorize/kakao?redirect_uri=http://localhost:8082/oauth2/redirect">
           </a>
         </div>
       </div>

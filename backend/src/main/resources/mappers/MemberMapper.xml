@@ -15,7 +15,7 @@
         SELECT * FROM member WHERE provider = #{provider} AND provider_id = #{providerId}
     </select>
 
-    <insert id="insertMember" parameterType="com.plands.backend.dto.MemberDto" useGeneratedKeys="true" keyProperty="userSq">
+    <insert id="insertMember" parameterType="com.plands.backend.dto.MemberDto" useGeneratedKeys="true" keyProperty="memberId">
         INSERT INTO member (name, email, password, nickname, provider, provider_id, role)
         VALUES (#{name}, #{email}, #{password}, #{name}, #{provider}, #{providerId}, #{role.name})
     </insert>
