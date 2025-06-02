@@ -10,6 +10,9 @@ export const useAuthStore = defineStore('auth', {
     nickname: localStorage.getItem('nickname') || null,
   }),
   actions: {
+    setProfileImageUrl(newUrl) {
+      this.profileImageUrl = newUrl
+    },
     setUser(user) {
       this.isLoggedIn = true;
       this.memberId = user.memberId;

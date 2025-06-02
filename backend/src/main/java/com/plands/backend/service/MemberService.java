@@ -12,6 +12,7 @@ public interface MemberService {
     Boolean matchesPassword(String rawPassword, String encodedPassword);
     void updateMember(Long memberId, MemberUpdateRequestDto requestDto);
     MemberProfileResponseDto getMemberProfile(Long memberId);
+    MemberProfileResponseDto getMemberId(Long memberId);
     MemberDto findByMemberName(String username);
     MemberDto findByProviderAndProviderId(String provider, String providerId);
     Optional<MemberDto> findByEmail(String email);

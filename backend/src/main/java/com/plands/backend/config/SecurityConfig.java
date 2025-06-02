@@ -12,9 +12,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -42,7 +42,6 @@ public class SecurityConfig {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -51,20 +50,13 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/oauth2/**", "/login/**", "/api/auth/signup", "/api/auth/login", "/api/auth/refresh-token").permitAll()
+                                .requestMatchers("/oauth2/**", "/login/**", "/api/auth/**", "/uploads/**", "/uploads/profile/**", "/uploads/post/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(form -> form.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .exceptionHandling(exceptionHandling ->
-                        exceptionHandling.authenticationEntryPoint(new AuthenticationEntryPoint() {
-                            @Override
-                            public void commence(HttpServletRequest request, HttpServletResponse response,
-                                                 org.springframework.security.core.AuthenticationException authException)
-                                    throws IOException {
-                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-                            }
-                        })
+                        exceptionHandling.authenticationEntryPoint(customAuthenticationEntryPoint())
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(endpoint ->
@@ -80,12 +72,30 @@ public class SecurityConfig {
                         .successHandler(oAuth2SuccessHandler)
                         .failureHandler(oAuth2FailureHandler)
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), OAuth2LoginAuthenticationFilter.class)
+                // JWT 필터를 UsernamePasswordAuthenticationFilter 위치에 배치
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .csrf(csrf -> csrf.disable())
-                //.csrf(csrf -> csrf.ignoringRequestMatchers("/api/auth/login", "/api/auth/signup"))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationEntryPoint customAuthenticationEntryPoint() {
+        return new AuthenticationEntryPoint() {
+            @Override
+            public void commence(HttpServletRequest request, HttpServletResponse response,
+                                 org.springframework.security.core.AuthenticationException authException)
+                    throws IOException {
+                // JWT 필터에서 이미 처리했다면 추가 처리하지 않음
+                if (!response.isCommitted()) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.getWriter().write("{\"error\": \"Authentication required\"}");
+                    response.getWriter().flush();
+                }
+            }
+        };
     }
 
     @Bean
@@ -101,14 +111,14 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8082")); // 클라이언트의 주소
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 필요한 HTTP 메서드
-        configuration.setAllowedHeaders(Arrays.asList("*")); // 모든 헤더 허용
-        configuration.setExposedHeaders(Arrays.asList("Authorization", "Refresh-Token"));
-        configuration.setAllowCredentials(true); // 쿠키를 허용하려면 true로 설정
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8082"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")); // 필요한 HTTP 메서드
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization", "Refresh-Token", "Content-Type"));
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // 모든 경로에 CORS 적용
+        source.registerCorsConfiguration("/**", configuration);
 
         return source;
     }

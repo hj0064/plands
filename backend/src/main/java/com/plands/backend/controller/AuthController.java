@@ -1,6 +1,7 @@
 package com.plands.backend.controller;
 
 import com.plands.backend.auth.CookieUtils;
+import com.plands.backend.auth.JwtAuthenticationFilter;
 import com.plands.backend.auth.JwtToken;
 import com.plands.backend.auth.JwtTokenProvider;
 import com.plands.backend.dto.LoginDto;
@@ -11,12 +12,17 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -25,6 +31,7 @@ public class AuthController {
 
     private final MemberServiceImpl memberService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
 
     // 회원가입
     @PostMapping("/signup")
@@ -45,12 +52,54 @@ public class AuthController {
     }
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<?> refreshToken(@RequestHeader("Refresh-Token") String refreshToken) {
-        String newAccessToken = jwtTokenProvider.regenerateAccessToken(refreshToken);
+    public ResponseEntity<?> refreshToken(HttpServletRequest request) {
+        try {
+            String refreshToken = jwtTokenProvider.resolveRefreshToken(request);
 
-        JwtToken tokenResponse = new JwtToken("Bearer", newAccessToken, refreshToken);
+            LOGGER.debug("Refresh token 요청 수신");
+            LOGGER.debug("Refresh token present: {}", refreshToken != null);
 
-        return ResponseEntity.ok(tokenResponse);
+            if (refreshToken == null || refreshToken.trim().isEmpty()) {
+                LOGGER.warn("Refresh token이 없습니다.");
+                return ResponseEntity.badRequest()
+                        .body(createErrorResponse("Refresh token이 필요합니다."));
+            }
+
+            // Refresh Token 유효성 검증
+            if (!jwtTokenProvider.validateToken(refreshToken)) {
+                LOGGER.warn("유효하지 않은 refresh token입니다.");
+                return ResponseEntity.status(401)
+                        .body(createErrorResponse("유효하지 않은 refresh token입니다."));
+            }
+
+            // 새로운 Access Token 생성
+            String newAccessToken = jwtTokenProvider.regenerateAccessToken(refreshToken);
+
+            // 새로운 토큰들로 JwtToken 객체 생성 (필요시 새로운 Refresh Token도 생성)
+            Authentication authentication = jwtTokenProvider.getAuthentication(newAccessToken);
+            JwtToken newJwtToken = jwtTokenProvider.generateToken(authentication);
+
+            LOGGER.debug("새로운 토큰 발급 완료");
+
+            // 응답 데이터 구성
+            Map<String, String> tokenResponse = new HashMap<>();
+            tokenResponse.put("accessToken", newJwtToken.getAccessToken());
+            tokenResponse.put("refreshToken", newJwtToken.getRefreshToken());
+            tokenResponse.put("grantType", "Bearer");
+
+            return ResponseEntity.ok(tokenResponse);
+
+        } catch (Exception e) {
+            LOGGER.error("토큰 재발급 중 오류 발생", e);
+            return ResponseEntity.status(500)
+                    .body(createErrorResponse("토큰 재발급 중 오류가 발생했습니다."));
+        }
+    }
+
+    private Map<String, String> createErrorResponse(String message) {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("error", message);
+        return errorResponse;
     }
 
     @PostMapping("/login")

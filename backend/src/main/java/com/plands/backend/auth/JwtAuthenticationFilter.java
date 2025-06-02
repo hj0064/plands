@@ -12,6 +12,7 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -28,7 +29,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/api/auth/refresh-token",
             "/oauth2/**",
             "/login",
-            "/login/**"
+            "/login/**",
+            "/uploads/**"
     };
 
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
@@ -43,31 +45,57 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         return false; // 필터 실행
     }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String requestURI = request.getRequestURI();
         String accessToken = jwtTokenProvider.resolveAccessToken(request);
         String refreshToken = jwtTokenProvider.resolveRefreshToken(request);
+
+        LOGGER.debug("Request URI: {}", requestURI);
+        LOGGER.debug("Access Token present: {}", accessToken != null);
+        LOGGER.debug("Refresh Token present: {}", refreshToken != null);
 
         boolean isAccessTokenValid = jwtTokenProvider.validateToken(accessToken);
         boolean isRefreshTokenValid = jwtTokenProvider.validateToken(refreshToken);
 
+        LOGGER.debug("Access Token valid: {}", isAccessTokenValid);
+        LOGGER.debug("Refresh Token valid: {}", isRefreshTokenValid);
+
         if (accessToken != null && isAccessTokenValid) {
+            // Access Token이 유효한 경우
             Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            LOGGER.debug("Access token is valid. User is authenticated.");
+            LOGGER.debug("Access token is valid. User authenticated: {}", authentication.getName());
+
         } else if (refreshToken != null && isRefreshTokenValid) {
-            String newAccessToken = jwtTokenProvider.regenerateAccessToken(refreshToken);
-            jwtTokenProvider.setHeaderAccessToken(response, newAccessToken);
-            Authentication authentication = jwtTokenProvider.getAuthentication(newAccessToken);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            LOGGER.debug("Access token regenerated using refresh token.");
+//            // Access Token은 무효하지만 Refresh Token이 유효한 경우
+//            try {
+//                String newAccessToken = jwtTokenProvider.regenerateAccessToken(refreshToken);
+//                jwtTokenProvider.setHeaderAccessToken(response, newAccessToken);
+//                Authentication authentication = jwtTokenProvider.getAuthentication(newAccessToken);
+//                SecurityContextHolder.getContext().setAuthentication(authentication);
+//                LOGGER.debug("Access token regenerated using refresh token for user: {}", authentication.getName());
+//            } catch (Exception e) {
+//                LOGGER.error("Failed to regenerate access token", e);
+//                handleUnauthorizedRequest(response, "Failed to regenerate access token");
+//                return;
+//            }
+
         } else {
-            LOGGER.warn("No valid token found. User will be logged out.");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Unauthorized access - Token invalid or expired");
+            // 둘 다 유효하지 않은 경우
+            LOGGER.warn("No valid token found for request: {}", requestURI);
+            handleUnauthorizedRequest(response, "Unauthorized access - Token invalid or expired");
             return;
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private void handleUnauthorizedRequest(HttpServletResponse response, String message) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write(String.format("{\"error\": \"%s\"}", message));
+        response.getWriter().flush();
     }
 }

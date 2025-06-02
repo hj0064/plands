@@ -2,96 +2,132 @@ import axios from 'axios';
 
 // axios 인스턴스 생성
 const api = axios.create({
-  baseURL: 'http://localhost:8081', // Spring Boot 서버 주소
+  baseURL: 'http://localhost:8081',
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true,  // 쿠키 포함을 허용
+  withCredentials: false,
 });
 
-// 요청 인터셉터: 모든 요청 전에 Authorization 헤더에 토큰 추가
+// 요청 인터셉터: accessToken과 refreshToken을 헤더에 추가
 api.interceptors.request.use(
   (config) => {
-    // 회원가입 요청에서는 Authorization 헤더를 추가하지 않도록 처리
-    if (config.url !== '/api/auth/signup') {
-      const token = localStorage.getItem('accessToken');
-      if (token) {
-        config.headers['Authorization'] = `Bearer ${token}`;
-        console.log('🚀 요청에 토큰 추가:', token);
-      }
+    const publicEndpoints = ['/api/auth/signup', '/api/auth/login'];
+    const isPublicEndpoint = publicEndpoints.some(endpoint => config.url === endpoint);
+
+    if (!isPublicEndpoint) {
+      const accessToken = localStorage.getItem('accessToken');
       const refreshToken = localStorage.getItem('refreshToken');
+
+      if (accessToken) {
+        config.headers['Authorization'] = `Bearer ${accessToken}`;
+        console.log('🚀 요청에 AccessToken 추가');
+      }
+
       if (refreshToken) {
         config.headers['Refresh-Token'] = refreshToken;
-        console.log('🚀 요청에 Refresh-Token 추가:', refreshToken);
+        console.log('🚀 요청에 RefreshToken 추가');
       }
     }
+
+    console.log('📤 요청 URL:', config.url);
+    console.log('📤 요청 헤더:', config.headers);
+
     return config;
   },
-  (error) => {
-    return Promise.reject(error);  // 요청 오류가 발생하면 그 오류를 반환
-  }
+  (error) => Promise.reject(error)
 );
 
-// 응답 인터셉터: 서버 응답 처리 (예: 401 에러 처리)
+// 응답 인터셉터: 필요한 경우에만 토큰 저장 및 401 처리
 api.interceptors.response.use(
   (response) => {
-    const authHeader = response.headers['authorization'];
-    if (authHeader && authHeader.startsWith('Bearer ')) {
+    const url = response.config.url;
+
+    // 로그인 또는 토큰 재발급 요청에만 토큰 저장
+    const isAuthEndpoint = url.includes('/api/auth/login') || url.includes('/api/auth/refresh-token');
+
+    if (isAuthEndpoint) {
+      if (response.data?.accessToken) {
+        localStorage.setItem('accessToken', response.data.accessToken);
+        console.log('✅ AccessToken 저장됨 (로그인 또는 재발급)');
+      }
+      if (response.data?.refreshToken) {
+        localStorage.setItem('refreshToken', response.data.refreshToken);
+        console.log('🔄 RefreshToken 저장됨 (로그인 또는 재발급)');
+      }
+    }
+
+    // 응답 헤더에 Authorization이 있다면 AccessToken 업데이트
+    const authHeader = response.headers['authorization'] || response.headers['Authorization'];
+    if (authHeader?.startsWith('Bearer ')) {
       const token = authHeader.replace('Bearer ', '');
       localStorage.setItem('accessToken', token);
-      console.log('✅ accessToken 저장됨:', token);
-    }
-    // 👉 응답 본문에서 refreshToken이 있으면 저장
-    if (response.data && response.data.refreshToken) {
-      localStorage.setItem('refreshToken', response.data.refreshToken);
-      console.log('🔄 RefreshToken 저장됨:', response.data.refreshToken);
+      console.log('✅ 새로운 AccessToken 저장됨 (응답 헤더)');
     }
 
     return response;
   },
   async (error) => {
-    if (error.response && error.response.status === 401) {
-      console.log('🚨 AccessToken 만료됨! RefreshToken으로 새로운 AccessToken을 요청합니다.');
+    const originalRequest = error.config;
+
+    console.log('❌ 에러 발생:', error.response?.status, error.response?.data);
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      console.log('🔄 토큰 재발급 시도...');
 
       const refreshToken = localStorage.getItem('refreshToken');
-      if (refreshToken) {
-        try {
-          const refreshResponse = await api.post(
-            '/api/auth/refresh-token',
-            {},
-            {
-              headers: {
-                ...api.defaults.headers.common,
-                'Refresh-Token': refreshToken,
-              },
-            }
-          );
+      if (!refreshToken) {
+        console.error('❌ RefreshToken 없음. 로그아웃 처리');
+        handleLogout();
+        return Promise.reject(error);
+      }
 
-          const newAccessToken = refreshResponse.data.accessToken;
-          localStorage.setItem('accessToken', newAccessToken);
-
-          console.log('🔑 새로운 AccessToken 발급됨:', newAccessToken);
-
-          error.config.headers['Authorization'] = `Bearer ${newAccessToken}`;
-
-          if (!error.config._retry) {
-            error.config._retry = true;
-            return api(error.config);  // axios -> api로 변경
+      try {
+        const refreshResponse = await axios.post(
+          'http://localhost:8081/api/auth/refresh-token',
+          {},
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Refresh-Token': refreshToken,
+            },
           }
-        } catch (refreshError) {
-          console.error('RefreshToken으로 AccessToken 갱신 실패:', refreshError);
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
-          window.location.href = '/login';
+        );
+
+        console.log('🔄 토큰 재발급 응답:', refreshResponse.data);
+
+        if (refreshResponse.data.accessToken) {
+          localStorage.setItem('accessToken', refreshResponse.data.accessToken);
+          console.log('🔑 새로운 AccessToken 저장됨');
         }
-      } else {
-        console.error('RefreshToken이 존재하지 않습니다.');
-        window.location.href = '/login';
+        if (refreshResponse.data.refreshToken) {
+          localStorage.setItem('refreshToken', refreshResponse.data.refreshToken);
+          console.log('🔑 새로운 RefreshToken 저장됨');
+        }
+
+        originalRequest.headers['Authorization'] = `Bearer ${refreshResponse.data.accessToken}`;
+        originalRequest.headers['Refresh-Token'] = refreshResponse.data.refreshToken;
+
+        console.log('🔄 원본 요청 재시도');
+        return api(originalRequest);
+      } catch (refreshError) {
+        console.error('❌ RefreshToken으로 갱신 실패:', refreshError);
+        handleLogout();
+        return Promise.reject(refreshError);
       }
     }
+
     return Promise.reject(error);
   }
 );
 
+// 로그아웃 처리
+function handleLogout() {
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+  console.log('🚪 로그아웃 완료');
+  window.location.href = '/login';
+}
 
 export default api;

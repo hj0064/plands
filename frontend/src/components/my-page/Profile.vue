@@ -2,8 +2,7 @@
   <div class="my-page-info">
       <div class="user-info-section">
         <div class="avatar-placeholder">
-          <img v-if="profileImageUrl" :src="profileImageUrl"  alt="user-profile-img"/>
-          <img v-else src="../../assets/images/icon/profile-default.png" alt="profile-img" />
+          <img v-if="profileImageUrl" :src="displayedProfileImage"  alt="user-profile-img"/>
         </div>
         <h1 class="nickname">{{ nickname }} 님</h1>
       </div>
@@ -36,10 +35,10 @@
 
 <script setup>
 // monunt 되기 전 호출하기 위해, ref 반응형 값
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue'
 import api from '@/utils/api.js';
 import { useAuthStore } from '@/stores/authStore.js'
-
+import defaultProfile from '@/assets/images/icon/profile-default.png'
 const authStore = useAuthStore();
 
 const nickname = ref('');
@@ -48,6 +47,14 @@ const plantCount = ref(0);
 const diaryCount = ref(0);
 const postCount = ref(0);
 const commentCount = ref(0);
+
+const serverBaseUrl = 'http://localhost:8081';
+
+const displayedProfileImage = computed(() => {
+  return profileImageUrl.value
+    ? serverBaseUrl + profileImageUrl.value
+    : defaultProfile;
+});
 
 onMounted(async () => {
   const memberId = authStore.memberId;

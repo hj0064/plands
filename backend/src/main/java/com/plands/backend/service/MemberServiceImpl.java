@@ -62,6 +62,15 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void updateMember(Long memberId, MemberUpdateRequestDto requestDto) {
+        // 비밀번호가 비어 있지 않은 경우 암호화
+        if (requestDto.getPassword() != null && !requestDto.getPassword().isBlank()) {
+            String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
+            requestDto.setPassword(encodedPassword);
+        } else {
+            // 비밀번호가 비어 있다면 null로 설정해서 MyBatis에서 UPDATE 대상에서 제외되도록 유도
+            requestDto.setPassword(null);
+        }
+
         int updatedCount = memberMapper.updateMember(memberId, requestDto);
         if (updatedCount == 0) {
             throw new RuntimeException("회원 정보 수정에 실패했습니다. 존재하지 않는 회원입니다.");
@@ -72,6 +81,12 @@ public class MemberServiceImpl implements MemberService {
     public MemberProfileResponseDto getMemberProfile(Long memberId) {
         return memberMapper.getMemberProfile(memberId);
     }
+
+    @Override
+    public MemberProfileResponseDto getMemberId(Long memberId) {
+        return memberMapper.getMemberId(memberId);
+    }
+
 
     @Override
     public MemberDto findByMemberName(String username) {

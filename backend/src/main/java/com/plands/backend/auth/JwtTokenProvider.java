@@ -57,23 +57,23 @@ public class JwtTokenProvider {
                 .build();
     }
 
-    // AccessToken 생성
+    // AccessToken 생성 - 30분으로 수정
     public String createAccessToken(Authentication authentication, String authorities) {
         return Jwts.builder()
                 .signWith(key)
                 .setSubject(authentication.getName())
                 .claim("auth", authorities)
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 72)) // 30분
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30)) // 30분
                 .compact();
     }
 
-    // RefreshToken 생성
+    // RefreshToken 생성 - 7일로 수정
     public String createRefreshToken(Authentication authentication, String authorities) {
         return Jwts.builder()
                 .signWith(key)
                 .setSubject(authentication.getName())
                 .claim("auth", authorities)
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 72)) // 72시간
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)) // 7일
                 .compact();
     }
 
@@ -99,6 +99,11 @@ public class JwtTokenProvider {
 
     // JWT 토큰 검증
     public boolean validateToken(String token) {
+        if (token == null || token.trim().isEmpty()) {
+            LOGGER.debug("Token is null or empty");
+            return false;
+        }
+
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             LOGGER.debug("token is valid");
@@ -134,15 +139,42 @@ public class JwtTokenProvider {
         return null;
     }
 
-    // RefreshToken 추출
+    // RefreshToken 추출 - 쿠키에서도 찾아보도록 수정
     public String resolveRefreshToken(HttpServletRequest request) {
-        return request.getHeader("Refresh-Token");  // Refresh-Token 헤더에서 토큰을 추출 TODO: 여기 return 이 널이다.
+        // 헤더에서 먼저 찾기
+        String refreshToken = request.getHeader("Refresh-Token");
+        if (refreshToken != null && !refreshToken.trim().isEmpty()) {
+            return refreshToken;
+        }
+
+        // 쿠키에서 찾기 (선택사항)
+        if (request.getCookies() != null) {
+            for (jakarta.servlet.http.Cookie cookie : request.getCookies()) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+
+        LOGGER.debug("No refresh token found in headers or cookies");
+        return null;
     }
 
-    // RefreshToken으로 새로운 AccessToken 생성
+    // RefreshToken으로 새로운 AccessToken 생성 - 수정
     public String regenerateAccessToken(String refreshToken) {
         Claims claims = parseClaims(refreshToken);
-        return createAccessToken(new UsernamePasswordAuthenticationToken(claims.getSubject(), ""), claims.get("auth").toString());
+        String subject = claims.getSubject();
+        String authorities = claims.get("auth").toString();
+
+        // Authentication 객체 재생성
+        Collection<? extends GrantedAuthority> authoritiesList =
+                Arrays.stream(authorities.split(","))
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(subject, "", authoritiesList);
+
+        return createAccessToken(authentication, authorities);
     }
 
     // 새로운 AccessToken을 Response Header에 설정

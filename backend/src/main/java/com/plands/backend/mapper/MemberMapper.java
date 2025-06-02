@@ -12,8 +12,9 @@ public interface MemberMapper {
     int updateMember(@Param("memberId") Long memberId,
                      @Param("dto") MemberUpdateRequestDto requestDto);
     MemberProfileResponseDto getMemberProfile(@Param("memberId") Long memberId);
+    MemberProfileResponseDto getMemberId(Long memberId);
     MemberDto findByMemberName(String name);
     MemberDto findByEmail(String email);
     MemberDto findByProviderAndProviderId(@Param("provider") String provider, @Param("providerId") String providerId);
-
+    int updateProfileImage(@Param("memberId") Long memberId, @Param("profileImageUrl") String profileImageUrl);
 }
