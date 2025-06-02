@@ -105,7 +105,7 @@
 
 /* profile */
 .my-page-info {
-  padding: 100px 40px;
+  padding: 100px 60px;
   flex-grow: 1; /* flex 컨테이너에서 사용 가능한 공간을 차지하도록 함 */
   display: flex;
   flex-direction: column;
@@ -211,3 +211,219 @@
   color: #FFD700;
   font-size: 1.2em;
 }
+
+.profile-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 40px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  height: 80vh; /* 높이 고정 */
+}
+
+.profile-card {
+  display: flex;
+  width: 100%;
+  max-width: 1000px;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  gap: 20px;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  height: 80%; /* 부모 높이 상속 */
+  box-sizing: border-box;
+}
+
+.profile-sidebar {
+  background-color: #F6F6F6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* 상단 정렬 */
+  width: 300px;
+  height: 100%; /* 부모 높이에 맞춤 */
+  box-sizing: border-box;
+  padding: 20px 0; /* 위아래 여유 공간 */
+  position: relative; /* position relative로 하단 고정 가능 */
+}
+
+/* 프로필 영역은 위쪽에 고정 */
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  /* flex-shrink 막기 */
+  flex-shrink: 0;
+  padding: 0 20px;
+  width: 100%;
+}
+
+/* 회원탈퇴 링크는 sidebar 안에서 맨 아래로 고정 */
+.membership-leave-link {
+  color: #868e96;
+  text-decoration: none;
+  font-size: 15px;
+  margin-top: auto; /* 남은 공간 밀어내기 */
+  padding: 20px;
+  width: 100%;
+  text-align: center;
+  box-sizing: border-box;
+  cursor: pointer;
+  flex-shrink: 0;
+  border-top: 1px solid #ddd;
+  background-color: #fafafa;
+}
+
+.membership-leave-link:hover {
+  text-decoration: underline;
+}
+
+/* 프로필 사진 */
+.avatar-image {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #eee;
+}
+
+/* 프로필 변경 버튼 */
+.change-profile-button {
+  background-color: #92B77D;
+  color: #ffffff;
+  border: 1px solid #92B77D;
+  border-radius: 50px;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  width: 100%;
+  max-width: 200px;
+  box-sizing: border-box;
+}
+
+.change-profile-button:hover {
+  background-color: #7FA26B;
+}
+
+/* form-section */
+.form-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  justify-content: center;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px; /* 이메일, 이름, 닉네임, 비밀번호 모두 동일한 간격 */
+  gap: 16px;
+}
+
+.form-group:last-of-type {
+  margin-bottom: 0; /* 마지막 저장 버튼과의 간격 조절 */
+}
+
+.form-group .error-message {
+  margin-top: 8px;
+  font-size: 13px;
+  color: red;
+  white-space: nowrap;
+}
+
+/* 입력 박스와 에러 메시지를 세로로 정렬하려면 이 wrapper에 스타일 필요 */
+.form-group > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  width: 100px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.form-group input {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  font-size: 15px;
+  min-width: 0;
+  box-sizing: border-box;
+  height: 40px;
+}
+
+.readonly-input {
+  background-color: #e9ecef;
+  color: #495057;
+  cursor: not-allowed;
+}
+
+/* --- password-wrapper 관련 스타일 --- */
+.password-wrapper {
+  position: relative;
+  flex: 1; /* 이 줄 추가 */
+  display: flex; /* block → flex */
+  align-items: center;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 40px; /* 아이콘 공간 확보 */
+  box-sizing: border-box;
+  height: 40px;
+}
+
+.toggle-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  stroke: #6c757d;
+}
+
+.toggle-icon .icon {
+  width: 20px;
+  height: 20px;
+  stroke: #6c757d;
+}
+
+
+/* --- 기타 --- */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.save-button {
+  background-color: #39D353; /* 버튼 배경 색 */
+  color: white; /* 텍스트 색 */
+  padding: 12px 30px; /* 패딩 설정 */
+  border: none; /* 기본 테두리 제거 */
+  border-radius: 30px; /* 모서리 둥글게 */
+  cursor: pointer; /* 마우스 커서 */
+  font-size: 16px; /* 글자 크기 */
+  transition: background-color 0.3s ease; /* 배경색 변화에 대한 트랜지션 효과 */
+  width: 180px;
+}
+
+.save-button:hover {
+  background-color: #00C957;
+}
+

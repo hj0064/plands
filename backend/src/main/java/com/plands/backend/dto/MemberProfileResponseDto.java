@@ -11,7 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberProfileResponseDto {
+    private Long memberId;
     private String nickname;
+    private String email;
+    private String name;
     private String profileImageUrl;
     private int postCount;
     private int commentCount;

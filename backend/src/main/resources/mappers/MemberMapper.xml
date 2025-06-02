@@ -7,18 +7,27 @@
         VALUES (#{name}, #{email}, #{password}, #{name}, #{provider}, #{providerId}, #{role.name})
     </insert>
 
-    <update id="updateMember" parameterType="map">
+    <update id="updateMember" parameterType="com.plands.backend.dto.MemberUpdateRequestDto">
         UPDATE member
         SET
-            nickname = #{dto.nickname},
-            password = #{dto.password},
-            profile_image_url = #{dto.profileImageUrl},
-            updated_at = NOW()
+        nickname = #{dto.nickname}
+        <if test="dto.password != null">
+            ,password = #{dto.password}
+        </if>
+        , updated_at = NOW()
+        WHERE member_id = #{memberId}
+    </update>
+
+    <update id="updateProfileImage">
+        UPDATE member
+        SET profile_image_url = #{profileImageUrl}
         WHERE member_id = #{memberId}
     </update>
 
     <select id="getMemberProfile" resultType="com.plands.backend.dto.MemberProfileResponseDto">
         SELECT
+            m.member_id,
+            m.name,
             m.nickname,
             m.profile_image_url,
             (SELECT COUNT(*) FROM diary WHERE member_id = #{memberId}) AS diaryCount,
@@ -27,6 +36,12 @@
             (SELECT COUNT(*) FROM comment WHERE member_id = #{memberId}) AS commentCount
             FROM member m
         WHERE m.member_id = #{memberId}
+    </select>
+
+    <select id="getMemberId" resultType="com.plands.backend.dto.MemberProfileResponseDto">
+        SELECT member_id, name, email, nickname, profile_image_url
+        FROM member
+        WHERE member_id = #{memberId}
     </select>
 
     <select id="findByMemberName" resultType="com.plands.backend.dto.MemberDto">
