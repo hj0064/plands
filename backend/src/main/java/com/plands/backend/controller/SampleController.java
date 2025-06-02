@@ -2,6 +2,7 @@ package com.plands.backend.controller;
 
 import com.plands.backend.domain.Sample;
 import com.plands.backend.service.SampleServcie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class SampleController {
     }
 
     @GetMapping
-    public List<Sample> getUsers() {
+    public List<Sample> getUsers(@RequestHeader("Authorization") String authorization) {
         return sampleServcie.getAllUsers();
     }
 }

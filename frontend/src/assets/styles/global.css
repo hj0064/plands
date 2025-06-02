@@ -1,0 +1,65 @@
+/* 기본 페이지 레이아웃*/
+.board-container {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.search-container {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 30px;
+}
+
+.home-container {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/*App.vue css*/
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  text-align: center;
+}
+
+.main-container {
+  width: 100%;
+  min-height: 100vh;
+  padding-top: 63px;
+  box-sizing: border-box;
+  font-family: Pretendard, serif;
+}
+
+.app-footer {
+  text-align: center;
+  border-top: 1px solid #eee;
+  padding: 20px 0;
+  font-size: 14px;
+  color: #888;
+}
+
+
+@font-face {
+    font-family: "Pretendard-Regular";
+    src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff")
+    format("woff");
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Pretendard-SemiBold";
+    src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-SemiBold.woff")
+    format("woff");
+    font-weight: 600;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Pretendard-Bold";
+    src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff")
+    format("woff");
+    font-weight: 700;
+    font-style: normal;
+}
+

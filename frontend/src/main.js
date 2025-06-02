@@ -1,14 +1,24 @@
-import './assets/main.css'
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import App from './App.vue';
+import router from './router';
+import api from './utils/api.js';
 
-import App from './App.vue'
-import router from './router'
+const accessToken = localStorage.getItem('accessToken');
+const refreshToken = localStorage.getItem('refreshToken');
 
-const app = createApp(App)
+if (accessToken) {
+  api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+}
 
-app.use(createPinia())
-app.use(router)
+if (refreshToken) {
+  api.defaults.headers.common['Refresh-Token'] = refreshToken;
+}
 
-app.mount('#app')
+const app = createApp(App);
+
+app.use(createPinia());
+app.use(router);
+
+app.mount('#app');

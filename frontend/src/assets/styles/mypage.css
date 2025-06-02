@@ -1,0 +1,213 @@
+/* 마이페이지 배경*/
+.my-page-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #ffffff;
+  overflow: hidden;
+}
+
+/* 마이페이지 내부 컴포넌트*/
+.main-content-area {
+  padding-top: 40px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 마이페이지 사이드바*/
+.sidebar {
+  width: 250px;
+  padding: 200px 30px;
+  background-color: #f7f9fc; /* Lighter background for sidebar */
+  border-right: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.menu {
+  width: 100%;
+}
+
+.menu-title {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 25px;
+  padding-left: 10px;
+  /* 아래 세 줄이 추가/수정된 부분입니다. */
+  border-bottom: 3px solid #333333; /* 굵고 초록색인 밑줄 */
+  padding-bottom: 10px; /* 텍스트와 선 사이의 간격 */
+}
+
+.menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-item {
+  padding: 12px 10px;
+  color: #555;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  border-radius: 8px; /* Slightly rounded menu items */
+  font-size: 1.05em;
+}
+
+.menu-item:hover {
+  background-color: #e6f7ff; /* Light blue on hover */
+  color: #007bff; /* Blue text on hover */
+}
+
+.menu-item.active {
+  color: #4CAF50; /* Green for active item */
+  font-weight: bold;
+  background-color: #e8f5e9; /* Lighter green for active item background */
+}
+
+/* 로그아웃 버튼 스타일 */
+.logout-section {
+  margin-top: auto; /* 메뉴 리스트가 공간을 다 차지하고 이 섹션은 가장 아래로 */
+  width: 100%; /* 부모 너비에 맞춤 */
+  padding-top: 20px; /* 메뉴와 로그아웃 버튼 사이 간격 */
+  border-top: 1px solid #e0e0e0; /* 구분선 */
+  text-align: center; /* 버튼 중앙 정렬 */
+}
+
+.logout-button {
+  background-color: #f8f8f8; /* 배경색 */
+  color: #92B77D; /* 빨간색 글씨 (경고색) */
+  border: 1px solid #92B77D; /* 빨간색 테두리 */
+  border-radius: 50px;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  width: calc(100% - 20px); /* 패딩 고려한 너비 */
+  max-width: 150px; /* 최대 너비 설정으로 너무 길어지지 않게 */
+}
+
+.logout-button:hover {
+  background-color: #92B77D; /* 호버 시 배경색 반전 */
+  color: #ffffff; /* 호버 시 글씨색 흰색 */
+}
+
+/* page loading, err defalut messgae*/
+.loading {
+  color: #777;
+  text-align: center;
+}
+.error {
+  color: red;
+  text-align: center;
+}
+
+/* profile */
+.my-page-info {
+  padding: 100px 40px;
+  flex-grow: 1; /* flex 컨테이너에서 사용 가능한 공간을 차지하도록 함 */
+  display: flex;
+  flex-direction: column;
+}
+
+.user-info-section {
+  display: flex;
+  align-items: center;
+  margin-bottom: 50px;
+  width: 100%;
+  max-width: 600px; /* 미적인 통일을 위해 너비 제한 */
+  justify-content: flex-start; /* 왼쪽 정렬 */
+  padding-left: 20px;
+}
+
+.avatar-placeholder {
+  width: 100px;
+  height: 100px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border: 3px solid #f0f0f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.avatar-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지가 영역에 맞게 잘리지 않고 꽉 차게 */
+  border-radius: 50%;
+}
+
+.nickname {
+  font-size: 2.5em;
+  font-weight: bold;
+  color: #333;
+  margin-left: 30px;
+}
+
+.stats-grid {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  max-width: 1200px;
+  background-color: #ffffff;
+  border: 2px solid #e0e0e0;
+  border-radius: 15px;
+  padding: 30px 20px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 60px;
+}
+
+.stat-item {
+  text-align: center;
+  flex: 1; /* 공간을 균등하게 분배 */
+  padding: 0 15px;
+}
+
+.stat-item:not(:last-child) {
+  border-right: 1px solid #eee; /* 구분선 */
+}
+
+.stat-label {
+  font-size: 1em;
+  color: #777;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 2.2em;
+  font-weight: bold;
+  color: #333;
+}
+
+.inquiry-button {
+  background-color: #ffffff;
+  color: #555;
+  border: 1px solid #ccc;
+  border-radius: 30px;
+  padding: 12px 30px;
+  font-size: 1.1em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  width: 20vh;
+}
+
+.inquiry-button:hover {
+  background-color: #f0f0f0;
+  border-color: #a0a0a0;
+  color: #333;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.star-icon {
+  margin-right: 8px;
+  color: #FFD700;
+  font-size: 1.2em;
+}
