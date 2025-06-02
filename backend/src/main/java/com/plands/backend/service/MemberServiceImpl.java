@@ -2,13 +2,24 @@ package com.plands.backend.service;
 
 import com.plands.backend.auth.Role;
 import com.plands.backend.dto.MemberDto;
+import com.plands.backend.dto.MemberProfileResponseDto;
+import com.plands.backend.dto.MemberUpdateRequestDto;
 import com.plands.backend.mapper.MemberMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+/**
+ * 회원 정보를 관리하는 서비스 구현 클래스
+ * 비즈니스 로직을 처리합니다.
+ *
+ * @author HJ IM
+ * @version 1.0
+ * @since 2025-05-29
+ */
 @Service
 public class MemberServiceImpl implements MemberService {
     private final MemberMapper memberMapper;
@@ -19,6 +30,7 @@ public class MemberServiceImpl implements MemberService {
         this.memberMapper = memberMapper;
         this.passwordEncoder = passwordEncoder;
     }
+
 
     @Override
     public MemberDto saveMember(MemberDto memberDto) {
@@ -43,6 +55,25 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public Boolean matchesPassword(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
+
+    @Override
+    @Transactional
+    public void updateMember(Long memberId, MemberUpdateRequestDto requestDto) {
+        int updatedCount = memberMapper.updateMember(memberId, requestDto);
+        if (updatedCount == 0) {
+            throw new RuntimeException("회원 정보 수정에 실패했습니다. 존재하지 않는 회원입니다.");
+        }
+    }
+
+    @Override
+    public MemberProfileResponseDto getMemberProfile(Long memberId) {
+        return memberMapper.getMemberProfile(memberId);
+    }
+
+    @Override
     public MemberDto findByMemberName(String username) {
         return memberMapper.findByMemberName(username);
     }
@@ -52,10 +83,7 @@ public class MemberServiceImpl implements MemberService {
         return Optional.ofNullable(memberMapper.findByEmail(email));
     }
 
-    @Override
-    public Boolean matchesPassword(String rawPassword, String encodedPassword) {
-        return passwordEncoder.matches(rawPassword, encodedPassword);
-    }
+
 
     @Override
     public MemberDto findByProviderAndProviderId(String provider, String providerId) {

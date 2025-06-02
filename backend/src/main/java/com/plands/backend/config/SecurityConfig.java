@@ -51,7 +51,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/oauth2/**", "/login/**", "/api/auth/signup", "/api/auth/login").permitAll()
+                                .requestMatchers("/oauth2/**", "/login/**", "/api/auth/signup", "/api/auth/login", "/api/auth/refresh-token").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(form -> form.disable())

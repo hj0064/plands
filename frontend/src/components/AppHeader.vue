@@ -8,8 +8,6 @@
       <div class="menu-container">
         <div>
           <nav class="nav">
-            <!-- TODO: mypage 디자인 후 logout 버튼 mypage로 옮기기 -->
-            <button v-if="isLoggedIn" @click="logout" class="nav-link">Logout</button>
             <router-link to="/calendar" class="nav-link" :class="{ active: isActive('/calendar') }">Calendar</router-link>
             <router-link to="/plant" class="nav-link" :class="{ active: isActive('/plant') }">Plant</router-link>
             <router-link to="/community" class="nav-link" :class="{ active: isActive('/community') }">Community</router-link>
@@ -35,7 +33,6 @@
 import { useAuthStore } from '@/stores/authStore'
 import logoIcon from "@/assets/images/icon/logo-icon.png"
 import profile from "@/assets/images/icon/profile-default.png"
-import api from "@/utils/api.js"
 
 export default {
   name: "AppHeader",
@@ -46,7 +43,6 @@ export default {
     };
   },
   computed: {
-    // Pinia의 상태를 사용하여 로그인 상태 체크
     isLoggedIn() {
       const authStore = useAuthStore();
       return authStore.isLoggedIn;
@@ -62,18 +58,6 @@ export default {
     moveMypage() {
       this.$router.push('/mypage');
     },
-    async logout() {
-      const authStore = useAuthStore();
-
-      await api.post('/api/auth/logout', {}, {
-        headers: {
-          Authorization: `Bearer ${authStore.accessToken}`
-        }
-      })
-      authStore.clearToken();  // Pinia 상태로 관리
-      this.$router.push('/login');
-      console.log("로그아웃 성공");
-    }
   }
 };
 </script>

@@ -3,6 +3,7 @@ package com.plands.backend.controller;
 import com.plands.backend.auth.CookieUtils;
 import com.plands.backend.auth.JwtToken;
 import com.plands.backend.auth.JwtTokenProvider;
+import com.plands.backend.dto.LoginDto;
 import com.plands.backend.dto.MemberDto;
 import com.plands.backend.service.MemberServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,23 +29,28 @@ public class AuthController {
     // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody MemberDto signUpRequest) {
-        System.out.println("회원가입 요청 들어옴");
         MemberDto memberDto = memberService.saveMember(signUpRequest);
-        System.out.println(memberDto);
-
-        UsernamePasswordAuthenticationToken authenticationToken = getAuthenticationToken(memberDto);
+        MemberDto user = memberService.findByEmail(memberDto.getEmail())
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        UsernamePasswordAuthenticationToken authenticationToken = getAuthenticationToken(user);
         JwtToken jwtToken = jwtTokenProvider.generateToken(authenticationToken);
 
-        return ResponseEntity.ok(jwtToken);
+        LoginDto response = new LoginDto(
+                jwtToken,
+                user.getMemberId(),
+                user.getNickname(),
+                user.getProfileImageUrl()
+        );
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/refresh-token")
     public ResponseEntity<?> refreshToken(@RequestHeader("Refresh-Token") String refreshToken) {
-        // RefreshToken을 사용하여 새로운 AccessToken을 생성
         String newAccessToken = jwtTokenProvider.regenerateAccessToken(refreshToken);
 
-        // 새로운 AccessToken 반환
-        return ResponseEntity.ok(new JwtToken("Bearer", newAccessToken, refreshToken));
+        JwtToken tokenResponse = new JwtToken("Bearer", newAccessToken, refreshToken);
+
+        return ResponseEntity.ok(tokenResponse);
     }
 
     @PostMapping("/login")
@@ -58,9 +64,13 @@ public class AuthController {
 
         UsernamePasswordAuthenticationToken authenticationToken = getAuthenticationToken(memberDto);
         JwtToken jwtToken = jwtTokenProvider.generateToken(authenticationToken);
-
-        // 발급된 JWT 토큰을 응답에 포함하여 반환
-        return ResponseEntity.ok(jwtToken);
+        LoginDto response = new LoginDto(
+            jwtToken,
+            user.getMemberId(),
+            user.getNickname(),
+            user.getProfileImageUrl()
+        );
+        return ResponseEntity.ok(response);
     }
 
     private static UsernamePasswordAuthenticationToken getAuthenticationToken(MemberDto memberDto) {

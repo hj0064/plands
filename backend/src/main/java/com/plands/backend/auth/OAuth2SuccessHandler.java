@@ -1,6 +1,9 @@
 package com.plands.backend.auth;
 
 import java.io.IOException;
+
+import com.plands.backend.dto.MemberDto;
+import com.plands.backend.service.MemberService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import jakarta.servlet.http.Cookie;
@@ -8,25 +11,27 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.PrintWriter;
 import java.util.Optional;
 
 @Component
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JwtTokenProvider jwtTokenProvider;
-
+    private final MemberService memberService;
     private final String REDIRECT_URI_PARAM_COOKIE_NAME = "redirect_uri";
     private static final Logger LOGGER = LoggerFactory.getLogger(OAuth2SuccessHandler.class);
 
     @Autowired
-    public OAuth2SuccessHandler(JwtTokenProvider jwtTokenProvider) {
+    public OAuth2SuccessHandler(JwtTokenProvider jwtTokenProvider, @Lazy MemberService memberService) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.memberService = memberService;
     }
 
     @Override
@@ -62,15 +67,23 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .map(Cookie::getValue);
         String targetUrl = cookie.orElse(getDefaultTargetUrl());
 
+        // 사용자 정보 조회
+        DefaultOAuth2User oAuth2User = (DefaultOAuth2User) authentication.getPrincipal();
+        String email = (String) oAuth2User.getAttributes().get("email");
+
+        MemberDto member = memberService.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("사용자 정보 없음"));
+
+        // 토큰 발급
         JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
 
-        String accessToken = jwtToken.getAccessToken();
-        String refreshToken = jwtToken.getRefreshToken();
-
-        // 토큰을 URL에 쿼리파라미터로 추가
+        // 사용자 정보 + 토큰을 리다이렉트 URI에 포함
         return UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("accessToken", accessToken)
-                .queryParam("refreshToken", refreshToken)
+                .queryParam("accessToken", jwtToken.getAccessToken())
+                .queryParam("refreshToken", jwtToken.getRefreshToken())
+                .queryParam("memberId", member.getMemberId())
+                .queryParam("nickname", member.getNickname())
+                .queryParam("profileImageUrl", member.getProfileImageUrl())
                 .build().toUriString();
     }
 

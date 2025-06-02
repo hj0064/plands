@@ -2,6 +2,32 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.plands.backend.mapper.MemberMapper">
+    <insert id="insertMember" parameterType="com.plands.backend.dto.MemberDto" useGeneratedKeys="true" keyProperty="memberId">
+        INSERT INTO member (name, email, password, nickname, provider, provider_id, role)
+        VALUES (#{name}, #{email}, #{password}, #{name}, #{provider}, #{providerId}, #{role.name})
+    </insert>
+
+    <update id="updateMember" parameterType="map">
+        UPDATE member
+        SET
+            nickname = #{dto.nickname},
+            password = #{dto.password},
+            profile_image_url = #{dto.profileImageUrl},
+            updated_at = NOW()
+        WHERE member_id = #{memberId}
+    </update>
+
+    <select id="getMemberProfile" resultType="com.plands.backend.dto.MemberProfileResponseDto">
+        SELECT
+            m.nickname,
+            m.profile_image_url,
+            (SELECT COUNT(*) FROM diary WHERE member_id = #{memberId}) AS diaryCount,
+            (SELECT COUNT(*) FROM member_plant WHERE member_id = #{memberId}) AS plantCount,
+            (SELECT COUNT(*) FROM post WHERE member_id = #{memberId}) AS postCount,
+            (SELECT COUNT(*) FROM comment WHERE member_id = #{memberId}) AS commentCount
+            FROM member m
+        WHERE m.member_id = #{memberId}
+    </select>
 
     <select id="findByMemberName" resultType="com.plands.backend.dto.MemberDto">
         SELECT * FROM member WHERE name = #{name}
@@ -15,9 +41,10 @@
         SELECT * FROM member WHERE provider = #{provider} AND provider_id = #{providerId}
     </select>
 
-    <insert id="insertMember" parameterType="com.plands.backend.dto.MemberDto" useGeneratedKeys="true" keyProperty="memberId">
-        INSERT INTO member (name, email, password, nickname, provider, provider_id, role)
-        VALUES (#{name}, #{email}, #{password}, #{name}, #{provider}, #{providerId}, #{role.name})
-    </insert>
+    <select id="findByMember" resultType="com.plands.backend.dto.MemberDto">
+        SELECT name, profile_image_url, email, password, nickname
+        FROM member
+        WHERE member_id = #{memberId}
+    </select>
 
 </mapper>

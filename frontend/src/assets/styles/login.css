@@ -1,5 +1,5 @@
 body {
-    font-family: sans-serif;
+    font-family: 'Pretendard-Regular',sans-serif;
     margin: 0;
     padding: 0;
     background-color: #ffffff;
@@ -38,6 +38,11 @@ body {
 /* Input Group */
 .input-group {
     margin-bottom: 20px;
+}
+
+.login-text {
+  font-family: 'Pretendard-Bold', sans-serif;
+  text-align: left;
 }
 
 .input-field {

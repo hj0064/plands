@@ -14,13 +14,16 @@ import java.time.LocalDateTime;
 public class MemberDto {
     private Long memberId;
     private String name;
+    private String nickname;
     private String email;
     private String password;
-    private Role role;           // Role enum 타입으로 수정
+    private Role role;
     private String provider;     // OAuth2 제공자명
     private String providerId;   // OAuth2 제공자에서의 유저 ID
+    private String profileImageUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
 
     // MyBatis 매핑용
     private String roleString;

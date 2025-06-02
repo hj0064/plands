@@ -63,7 +63,7 @@ public class JwtTokenProvider {
                 .signWith(key)
                 .setSubject(authentication.getName())
                 .claim("auth", authorities)
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30)) // 30분
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 72)) // 30분
                 .compact();
     }
 
