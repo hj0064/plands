@@ -1,15 +1,4 @@
 /* 기본 페이지 레이아웃*/
-.board-container {
-  width: 100%;
-  margin: 0 auto;
-}
-
-.search-container {
-  display: flex;
-  gap: 5px;
-  margin-bottom: 30px;
-}
-
 .home-container {
   width: 100vw;
   height: 100vh;
@@ -38,6 +27,7 @@
   padding: 20px 0;
   font-size: 14px;
   color: #888;
+  z-index: 1001;
 }
 
 
