@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plands.backend.mapper.FaqMapper">
+
+    <select id="selectFaqs" parameterType="map" resultType="com.plands.backend.dto.FaqResponseDto">
+        SELECT faq_id, question, answer
+        FROM faq
+        <where>
+            is_deleted = 0
+            <if test="keyword != null and keyword != ''">
+                AND (question LIKE CONCAT('%', #{keyword}, '%') OR answer LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY faq_id ASC
+        LIMIT #{size} OFFSET #{offset};
+    </select>
+
+    <select id="countFaqs" parameterType="map" resultType="int">
+        SELECT COUNT(*) FROM faq
+        WHERE is_deleted = 0
+        <if test="keyword != null and keyword != ''">
+            AND (question LIKE CONCAT('%', #{keyword}, '%') OR answer LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+    </select>
+
+</mapper>

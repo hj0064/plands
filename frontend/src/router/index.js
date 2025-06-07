@@ -4,6 +4,7 @@ import SignUpView from "@/views/SignUpView.vue";
 import OAuth2RedirectHandler from '@/views/OAuth2RedirectHandler.vue';
 import HomeView from '@/views/HomeView.vue'
 import MyPageView from '@/views/MyPageView.vue'
+import FaqView from '@/views/FaqView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,7 +33,12 @@ const router = createRouter({
       path: '/mypage',
       name: 'MyPageView',
       component: MyPageView
-    }
+    },
+    {
+      path: '/faq',
+      name: 'FaqView',
+      component: FaqView
+    },
   ],
 })
 

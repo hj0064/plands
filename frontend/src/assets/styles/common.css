@@ -1,5 +1,4 @@
 /* 버튼 */
-
 .btn-olive {
     background-color: #A3C47D; /* 버튼 배경 색 */
     color: white; /* 텍스트 색 */
@@ -149,76 +148,6 @@
     width: 120px;
 }
 
-/* 페이징 */
-.pagination {
-    display: flex;
-    justify-content: center;
-    margin: 30px 0;
-    text-align: center;
-    font-weight: bold;
-    gap: 10px;
-
-    button {
-        padding: 5px 10px;
-        border: none;
-        cursor: pointer;
-        background: none;
-        :disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-    }
-    span {
-        cursor: pointer;
-        padding: 5px 10px;
-        border: none;
-    }
-
-    span.active {
-        color: #A3C47D;
-        border-bottom: 2px solid #A3C47D;
-    }
-}
-
-/* 검색바 */
-.search-wrap {
-    display: flex;
-    align-items: center;
-    margin: 0 auto;
-    padding: 10px;
-    border: 1px solid lightgray;
-    border-radius: 30px;
-    width: 90%;
-    position: relative;
-
-    .search-input {
-        flex: 1;
-        border: none;
-        outline: none;
-        font-size: 16px;
-        padding: 8px 12px;
-        border-radius: 25px;
-        background-color: transparent;
-    }
-
-    .search-input::placeholder {
-        color: #999;
-    }
-
-    .search-button {
-        border: none;
-        cursor: pointer;
-        padding: 0 10px;
-        background-image: url("../images/icon/search-icon.png");
-        background-repeat: no-repeat;
-        background-size: contain;
-        background-position: center;
-        width: 30px;
-        height: 30px;
-        background-color: white;
-    }
-
-}
 
 /* 게시판형 테이블 */
 table {
