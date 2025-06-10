@@ -1,7 +1,7 @@
 package com.plands.backend.controller;
 
 import com.plands.backend.common.dto.PageResult;
-import com.plands.backend.dto.FaqResponseDto;
+import com.plands.backend.dto.response.FaqResponseDto;
 import com.plands.backend.service.FaqServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

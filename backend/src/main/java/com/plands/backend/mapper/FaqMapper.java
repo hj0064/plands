@@ -1,6 +1,6 @@
 package com.plands.backend.mapper;
 
-import com.plands.backend.dto.FaqResponseDto;
+import com.plands.backend.dto.response.FaqResponseDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

@@ -1,7 +1,7 @@
 package com.plands.backend.service;
 
 import com.plands.backend.common.dto.PageResult;
-import com.plands.backend.dto.FaqResponseDto;
+import com.plands.backend.dto.response.FaqResponseDto;
 import com.plands.backend.mapper.FaqMapper;
 import org.springframework.stereotype.Service;
 

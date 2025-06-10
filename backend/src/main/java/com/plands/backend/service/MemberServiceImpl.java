@@ -2,8 +2,8 @@ package com.plands.backend.service;
 
 import com.plands.backend.auth.Role;
 import com.plands.backend.dto.MemberDto;
-import com.plands.backend.dto.MemberProfileResponseDto;
-import com.plands.backend.dto.MemberUpdateRequestDto;
+import com.plands.backend.dto.response.MemberProfileResponseDto;
+import com.plands.backend.dto.response.MemberUpdateRequestDto;
 import com.plands.backend.mapper.MemberMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

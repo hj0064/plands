@@ -7,7 +7,7 @@
         VALUES (#{name}, #{email}, #{password}, #{name}, #{provider}, #{providerId}, #{role.name})
     </insert>
 
-    <update id="updateMember" parameterType="com.plands.backend.dto.MemberUpdateRequestDto">
+    <update id="updateMember" parameterType="com.plands.backend.dto.response.MemberUpdateRequestDto">
         UPDATE member
         SET
         nickname = #{dto.nickname}
@@ -24,7 +24,7 @@
         WHERE member_id = #{memberId}
     </update>
 
-    <select id="getMemberProfile" resultType="com.plands.backend.dto.MemberProfileResponseDto">
+    <select id="getMemberProfile" resultType="com.plands.backend.dto.response.MemberProfileResponseDto">
         SELECT
             m.member_id,
             m.name,
@@ -38,7 +38,7 @@
         WHERE m.member_id = #{memberId}
     </select>
 
-    <select id="getMemberId" resultType="com.plands.backend.dto.MemberProfileResponseDto">
+    <select id="getMemberId" resultType="com.plands.backend.dto.response.MemberProfileResponseDto">
         SELECT member_id, name, email, nickname, profile_image_url
         FROM member
         WHERE member_id = #{memberId}

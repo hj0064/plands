@@ -1,7 +1,7 @@
 package com.plands.backend.controller;
 
-import com.plands.backend.dto.MemberProfileResponseDto;
-import com.plands.backend.dto.MemberUpdateRequestDto;
+import com.plands.backend.dto.response.MemberProfileResponseDto;
+import com.plands.backend.dto.response.MemberUpdateRequestDto;
 import com.plands.backend.mapper.MemberMapper;
 import com.plands.backend.service.FileStorageService;
 import com.plands.backend.service.MemberServiceImpl;

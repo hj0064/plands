@@ -1,8 +1,8 @@
 package com.plands.backend.mapper;
 
 import com.plands.backend.dto.MemberDto;
-import com.plands.backend.dto.MemberProfileResponseDto;
-import com.plands.backend.dto.MemberUpdateRequestDto;
+import com.plands.backend.dto.response.MemberProfileResponseDto;
+import com.plands.backend.dto.response.MemberUpdateRequestDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

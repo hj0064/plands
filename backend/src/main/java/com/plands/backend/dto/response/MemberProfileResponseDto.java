@@ -1,4 +1,4 @@
-package com.plands.backend.dto;
+package com.plands.backend.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

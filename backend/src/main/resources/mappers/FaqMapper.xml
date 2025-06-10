@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.plands.backend.mapper.FaqMapper">
 
-    <select id="selectFaqs" parameterType="map" resultType="com.plands.backend.dto.FaqResponseDto">
+    <select id="selectFaqs" parameterType="map" resultType="com.plands.backend.dto.response.FaqResponseDto">
         SELECT faq_id, question, answer
         FROM faq
         <where>
