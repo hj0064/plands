@@ -25,7 +25,7 @@
 }
 
 
-/* FAQ 리스트 */
+/* 토글(faq) */
 .toggle-list {
     text-align: left;
     display: flex;
@@ -75,7 +75,7 @@
     background-color: transparent;
 }
 
-/* 문의 섹션 */
+/* 문의 섹션(faq) */
 .inquiry-section {
     width: 100%;
     background-color: #F4FAF0;
@@ -177,34 +177,211 @@
     opacity: 1;
 }
 
+/* 검색 기능 searchtype 추가 버전 */
+.search-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 80%;
+  margin: 0 auto 1rem;
+  padding-top: 1rem;
+}
 
-/* 페이징 */
+.notice-search {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.search-count {
+  font-size: 0.9rem;
+  color: #888888;
+  background: #f1f1f1;
+  padding: 0.1rem 0.4rem;
+  white-space: nowrap;
+}
+
+.search-type-container {
+  display: flex;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid #7D8458;
+  background-color: #fff;
+}
+
+.search-type-container select {
+  border: none;
+  font-size: 1rem;
+  color: #333333;
+}
+
+/*table형 게시물*/
+.board-table {
+  width: 80%;
+  border-collapse: collapse;
+  margin: 0 auto;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.board-table th,
+.board-table td {
+  padding: 1rem;
+  border: none;
+  border-top: 1px solid #A8BBA1;
+}
+
+.board-table thead {
+  background-color: #ffffff;
+  border-top: 4px solid #7D8458;
+}
+
+.no-data {
+  color: #999;
+  font-size: 1.2rem;
+}
+ /* pagination 페이징*/
 .pagination {
-    display: flex;
-    justify-content: center;
-    margin: 30px 0;
-    text-align: center;
-    font-weight: bold;
-    gap: 10px;
+  display: flex;
+  justify-content: center;
+  font-weight: bold;
+  gap: 0.25rem;
+  margin-top: 1.2rem;
+}
 
-    button {
-        padding: 5px 10px;
-        border: none;
-        cursor: pointer;
-        background: none;
-        :disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-    }
-    span {
-        cursor: pointer;
-        padding: 5px 10px;
-        border: none;
-    }
+.pagination button {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+.pagination button[disabled] {
+  cursor: default;
+  opacity: 0.5;
+}
 
-    span.active {
-        color: #A3C47D;
-        border-bottom: 2px solid #A3C47D;
-    }
+.pagination button.active {
+  font-weight: bold;
+  color: #7D8458;
+  border-bottom: 2px solid #7D8458;
+}
+
+/* 상세보기 페이지 레이아웃 */
+.board-detail-page {
+  display: flex;
+  justify-content: center;
+  padding: 4rem 1.5rem;
+  background-color: #fff;
+  min-height: 100vh;
+}
+
+.board-detail-container {
+  width: 100%;
+  padding: 3rem 0;
+  max-width: 1200px;
+}
+
+/* 로딩 메시지 */
+.loading {
+  text-align: center;
+  padding: 5rem;
+  color: #888;
+}
+
+/* 헤더 (카테고리, 제목, 날짜) */
+.board-header {
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #7D8458;
+}
+
+.board-title {
+  font-size: 2rem; /* 제목 폰트 크기 증가 */
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.board-date {
+  font-size: 0.9rem;
+  color: #888;
+  margin-top: 1rem;
+}
+
+/* 본문 */
+.board-content {
+  padding: 2rem 0;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #333;
+  min-height: 200px; /* 본문 최소 높이 확보 */
+}
+/* v-html로 생성될 수 있는 태그 스타일링 */
+.board-content :deep(ul) {
+  padding-left: 1.5rem;
+}
+.board-content :deep(li) {
+  margin-bottom: 0.5rem;
+}
+
+/* 하단 버튼 그룹 */
+.board-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 0;
+  border-top: 1px solid #7D8458;
+}
+
+.action-button {
+  background: none;
+  border: none;
+  color: #555;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0.5rem;
+}
+.action-button:hover {
+  color: #000;
+}
+
+/* 이전/다음 글 탐색 */
+.navigation-links {
+  border-top: 1px solid #f0f0f0;
+}
+
+.nav-item {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.nav-item:last-child {
+  border-bottom: none;
+}
+.nav-item-placeholder {
+  display: none; /* 이전 글이 없을 때 공간 차지하지 않음 */
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 1rem 0.5rem;
+  text-decoration: none;
+  color: #333;
+  transition: background-color 0.2s;
+}
+.nav-link:hover {
+  background-color: #f9f9f9;
+}
+
+.nav-label {
+  font-weight: 600;
+  color: #7D8458;
+  margin-right: 1.5rem;
+  flex-shrink: 0; /* 라벨 너비 고정 */
+}
+
+.nav-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

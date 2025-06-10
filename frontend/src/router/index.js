@@ -5,6 +5,8 @@ import OAuth2RedirectHandler from '@/views/OAuth2RedirectHandler.vue';
 import HomeView from '@/views/HomeView.vue'
 import MyPageView from '@/views/MyPageView.vue'
 import FaqView from '@/views/FaqView.vue'
+import NoticeListView from '@/views/NoticeListView.vue'
+import NoticeDeatilView from '@/views/NoticeDetailView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,6 +41,16 @@ const router = createRouter({
       name: 'FaqView',
       component: FaqView
     },
+    {
+      path: '/notice',
+      name: 'NoticeListView',
+      component: NoticeListView,
+    },
+    {
+      path: '/notice/:id',
+      name: 'NoticeDeatilView',
+      component: NoticeDeatilView,
+    }
   ],
 })
 

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.plands.backend.mapper.NoticeMapper">
+
+    <sql id="SearchWhere">
+        <if test="search.keyword != null and search.keyword.trim() != ''">
+            <choose>
+                <when test="search.searchType.name == 'TITLE'">
+                    AND title LIKE CONCAT('%', #{search.keyword}, '%')
+                </when>
+                <when test="search.searchType.name == 'CONTENT'">
+                    AND content LIKE CONCAT('%', #{search.keyword}, '%')
+                </when>
+                <otherwise>
+                    AND (title LIKE CONCAT('%', #{search.keyword}, '%')
+                    OR content LIKE CONCAT('%', #{search.keyword}, '%'))
+                </otherwise>
+            </choose>
+        </if>
+    </sql>
+
+    <select id="selectNoticeList" resultType="com.plands.backend.dto.response.NoticeListResponseDto">
+        SELECT notice_id, title, DATE_FORMAT(created_at, '%Y-%m-%d') as created_at
+        FROM notice
+        <where>
+            AND is_deleted = 0
+            <include refid="SearchWhere"/>
+        </where>
+        ORDER BY created_at desc
+        LIMIT #{search.size} OFFSET #{search.offset}
+    </select>
+
+    <select id="selectNoticeCount" resultType="int">
+        SELECT COUNT(*) FROM notice
+        WHERE is_deleted = 0
+        <include refid="SearchWhere"/>
+    </select>
+
+    <select id="selectNoticeDetail" parameterType="long" resultType="com.plands.backend.dto.response.NoticeDetailResponseDto">
+        SELECT notice_id, title, content, DATE_FORMAT(created_at, '%Y-%m-%d') as created_at
+        FROM notice
+        WHERE notice_id = #{noticeId}
+    </select>
+
+    <select id="selectAdjacentNotices" resultType="com.plands.backend.dto.response.NoticeListResponseDto">
+    <![CDATA[
+        SELECT 'prev' AS position, notice_id, title FROM (
+             SELECT notice_id, title
+             FROM notice
+             WHERE is_deleted = 0
+               AND notice_id < #{noticeId}
+             ORDER BY notice_id DESC
+             LIMIT 1
+         ) AS prev
+
+        UNION ALL
+
+        SELECT 'next' AS position, notice_id, title FROM (
+             SELECT notice_id, title
+             FROM notice
+             WHERE is_deleted = 0
+               AND notice_id > #{noticeId}
+             ORDER BY notice_id ASC
+             LIMIT 1
+         ) AS next
+    ]]>
+    </select>
+</mapper>
