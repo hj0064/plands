@@ -215,11 +215,10 @@
 .profile-container {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 100px 40px;
+  padding: 100px 20px;
   box-sizing: border-box;
   overflow-x: hidden;
-  height: 80vh; /* 높이 고정 */
+  height: 100vh; /* 높이 고정 */
 }
 
 .profile-card {

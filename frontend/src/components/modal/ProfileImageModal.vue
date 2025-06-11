@@ -54,8 +54,8 @@ const upload = async () => {
     <p v-else class="preview-placeholder">선택된 이미지가 없습니다.</p>
 
     <div class="modal-buttons">
-      <button @click="upload" :disabled="!file">업로드</button>
-      <button @click="$emit('close')">취소</button>
+      <button class="modal-button" @click="upload" :disabled="!file">업로드</button>
+      <button class="modal-button" @click="$emit('close')">취소</button>
     </div>
   </div>
 </div>
