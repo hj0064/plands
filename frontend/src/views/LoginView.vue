@@ -64,11 +64,11 @@ export default {
         const userForSetUser = {
           memberId: data.memberId,
           nickname: data.nickname,
+          role: data.role,
           profileImageUrl: data.profileImageUrl,
           accessToken: data.jwtToken.accessToken,
           refreshToken: data.jwtToken.refreshToken,
         };
-        console.log(userForSetUser);
         authStore.setUser(userForSetUser);
         this.$router.push('/');
       } catch (error) {

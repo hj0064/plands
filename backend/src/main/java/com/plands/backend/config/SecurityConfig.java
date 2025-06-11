@@ -50,7 +50,15 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/oauth2/**", "/login/**", "/api/auth/**", "/uploads/**", "/uploads/profile/**", "/uploads/post/**").permitAll()
+                                .requestMatchers(
+                                        "/oauth2/**",
+                                        "/login/**",
+                                        "/api/auth/**",
+                                        "/uploads/**",
+                                        "/uploads/profile/**",
+                                        "/uploads/post/**"
+                                ).permitAll()
+                                .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
                 .formLogin(form -> form.disable())

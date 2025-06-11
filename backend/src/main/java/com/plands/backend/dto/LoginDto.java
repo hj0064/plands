@@ -15,4 +15,5 @@ public class LoginDto {
     private Long memberId;
     private String nickname;
     private String profileImageUrl;
+    private String role;
 }
