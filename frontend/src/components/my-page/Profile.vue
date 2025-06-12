@@ -2,7 +2,8 @@
   <div class="my-page-info">
       <div class="user-info-section">
         <div class="avatar-placeholder">
-          <img v-if="profileImageUrl" :src="displayedProfileImage"  alt="user-profile-img"/>
+          <img n dev
+               :src="displayedProfileImage"  alt="user-profile-img"/>
         </div>
         <h1 class="nickname">{{ nickname }} 님</h1>
       </div>
@@ -34,7 +35,6 @@
 </template>
 
 <script setup>
-// monunt 되기 전 호출하기 위해, ref 반응형 값
 import { ref, onMounted, computed } from 'vue'
 import api from '@/utils/api.js';
 import { useAuthStore } from '@/stores/authStore.js'

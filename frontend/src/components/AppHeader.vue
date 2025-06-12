@@ -13,15 +13,21 @@
             <router-link to="/community" class="nav-link" :class="{ active: isActive('/community') }">Community</router-link>
             <router-link to="/notice" class="nav-link" :class="{ active: isActive('/notice') }">Notice</router-link>
             <router-link to="/faq" class="nav-link" :class="{ active: isActive('/faq') }">Faq</router-link>
+            <router-link
+              v-if="authStore.role==='ROLE_ADMIN'"
+              to="/admin"
+              class="nav-link"
+              :class="{active: isActive('/admin')}"
+            >Admin</router-link>
           </nav>
         </div>
         <div>
           <nav class="nav">
             <div>
-              <!-- 프로필 아이콘 -->
               <img
                 v-if="isLoggedIn"
                 :src="displayedProfileImage"
+                :key="displayedProfileImage"
                 alt="profile"
                 class="icon dropdown-button"
                 @click="moveMypage"
@@ -42,27 +48,24 @@ import { useAuthStore } from '@/stores/authStore'
 import logoIcon from "@/assets/images/icon/logo-icon.png"
 import defaultProfile from '@/assets/images/icon/profile-default.png'
 
-// 라우터
 const router = useRouter()
 const route = useRoute()
 
-// auth 상태
 const authStore = useAuthStore()
 const isLoggedIn = computed(() => authStore.isLoggedIn)
 
-// 서버 베이스 URL
 const serverBaseUrl = 'http://localhost:8081'
 
-// 프로필 이미지 URL
-const profileImageUrl = computed(() => authStore.profileImageUrl) // <- authStore에 있는 걸 가정
-const displayedProfileImage = computed(() =>
-  profileImageUrl.value ? serverBaseUrl + profileImageUrl.value : defaultProfile
-)
+const profileImageUrl = computed(() => authStore.profileImageUrl)
+const displayedProfileImage = computed(() => {
+  if (profileImageUrl.value) {
+    return `${serverBaseUrl}${profileImageUrl.value}?t=${new Date().getTime()}`;
+  }
+  return defaultProfile;
+});
 
-// 현재 경로와 일치하는지 확인
 const isActive = (targetRoute) => route.path === targetRoute
 
-// 페이지 이동
 const redirectToLogin = () => {
   router.push('/login')
 }

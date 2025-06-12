@@ -46,7 +46,8 @@ public class AuthController {
                 jwtToken,
                 user.getMemberId(),
                 user.getNickname(),
-                user.getProfileImageUrl()
+                user.getProfileImageUrl(),
+                user.getRole().name()
         );
         return ResponseEntity.ok(response);
     }
@@ -117,7 +118,8 @@ public class AuthController {
             jwtToken,
             user.getMemberId(),
             user.getNickname(),
-            user.getProfileImageUrl()
+            user.getProfileImageUrl(),
+            user.getRole().name()
         );
         return ResponseEntity.ok(response);
     }
