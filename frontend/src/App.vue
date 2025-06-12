@@ -1,21 +1,20 @@
 <template>
-  <div id="app">
-    <AppHeader />
-    <main class="main-container">
-      <router-view />
-    </main>
-    <footer class="app-footer">
-      <p>© 2024 My Plant Journal</p>
-    </footer>
-  </div>
+  <component :is="layoutComponent">
+    <router-view />
+  </component>
 </template>
 
-<script>
-import AppHeader from "@/components/AppHeader.vue";
-import "@/assets/styles/global.css";
-export default {
-  name: 'App',
-  components: { AppHeader },
-}
-</script>
+<script setup>
+import { useRoute } from 'vue-router'
+import { computed } from 'vue'
 
+import DefaultLayout from '@/layouts/DefaultLayout.vue'
+import AdminLayout from '@/layouts/AdminLayout.vue'
+
+const route = useRoute()
+
+const layoutComponent = computed(() => {
+  const layout = route.meta.layout
+  return layout === 'admin' ? AdminLayout : DefaultLayout
+})
+</script>
