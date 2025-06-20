@@ -10,6 +10,7 @@ import FaqView from '@/views/FaqView.vue'
 import NoticeListView from '@/views/NoticeListView.vue'
 import NoticeDetailView from '@/views/NoticeDetailView.vue'
 import AdminDashboard from '@/views/admin/AdminDashboard.vue'
+import CalendarView from '@/views/CalendarView.vue'
 
 const publicRoutes = [
   {
@@ -59,6 +60,12 @@ const publicRoutes = [
     name: 'noticeDetail',
     component: NoticeDetailView,
     meta: { layout: 'default' }
+  },
+  {
+    path: '/calendar',
+    name: 'calendar',
+    component: CalendarView,
+    meta: { layout: 'default', requiresAuth: true }
   },
 ]
 
