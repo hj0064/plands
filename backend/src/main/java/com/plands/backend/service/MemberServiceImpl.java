@@ -2,14 +2,20 @@ package com.plands.backend.service;
 
 import com.plands.backend.auth.Role;
 import com.plands.backend.dto.MemberDto;
+import com.plands.backend.dto.request.admin.member.MemberSearchRequestDto;
+import com.plands.backend.dto.request.admin.member.UpdateMemberRequestDto;
 import com.plands.backend.dto.response.MemberProfileResponseDto;
 import com.plands.backend.dto.response.MemberUpdateRequestDto;
+import com.plands.backend.dto.response.admin.member.MemberDetailResponseDto;
+import com.plands.backend.dto.response.admin.member.MemberResponseDto;
+import com.plands.backend.dto.response.admin.member.MemberStatResponseDto;
 import com.plands.backend.mapper.MemberMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -87,7 +93,6 @@ public class MemberServiceImpl implements MemberService {
         return memberMapper.getMemberId(memberId);
     }
 
-
     @Override
     public MemberDto findByMemberName(String username) {
         return memberMapper.findByMemberName(username);
@@ -98,6 +103,37 @@ public class MemberServiceImpl implements MemberService {
         return Optional.ofNullable(memberMapper.findByEmail(email));
     }
 
+    @Override
+    public MemberStatResponseDto getMemberStat() {
+        return memberMapper.getMemberStat();
+    }
+
+    @Override
+    public int getMemberCount(MemberSearchRequestDto requestDto) {
+        return memberMapper.getMemberCount(requestDto);
+    }
+
+    @Override
+    public List<MemberResponseDto> getMemberList(MemberSearchRequestDto requestDto) {
+        return memberMapper.getMemberList(requestDto);
+    }
+
+    @Override
+    public MemberDetailResponseDto getMemberDetail(Long memberId) {
+        return memberMapper.getMemberDetail(memberId);
+    }
+
+    @Override
+    @Transactional
+    public void updateMemberStatus(Long memberId, String status) {
+        UpdateMemberRequestDto requestDto = new UpdateMemberRequestDto();
+        requestDto.setStatus(status);
+        requestDto.setMemberId(memberId);
+        int updatedCount = memberMapper.updateMemberState(memberId, status);
+        if (updatedCount == 0) {
+            throw new RuntimeException("회원 정보 수정에 실패했습니다. 존재하지 않는 회원입니다.");
+        }
+    }
 
 
     @Override

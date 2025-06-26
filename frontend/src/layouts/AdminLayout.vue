@@ -13,27 +13,5 @@
 <script setup>
 import Sidebar from '@/components/admin/AdminSidebar.vue'
 import Header from '@/components/admin/AdminHeader.vue'
+import '@/assets/styles/admin-global.css'
 </script>
-
-<style>
-.admin-layout {
-  display: flex;
-  height: 100vh;
-  background-color: #f3f4f6; /* 연한 회색 배경 */
-}
-
-.main-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.content-area {
-  flex: 1;
-  overflow-x: hidden;
-  overflow-y: auto;
-  background-color: #f3f4f6;
-  padding: 24px;
-}
-</style>

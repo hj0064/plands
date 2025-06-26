@@ -10,6 +10,7 @@ import FaqView from '@/views/FaqView.vue'
 import NoticeListView from '@/views/NoticeListView.vue'
 import NoticeDetailView from '@/views/NoticeDetailView.vue'
 import AdminDashboard from '@/views/admin/AdminDashboard.vue'
+import UserManagementView from '@/views/admin/UserManagementView.vue'
 
 const publicRoutes = [
   {
@@ -79,6 +80,12 @@ const adminRoutes = {
       name: 'adminDashboard',
       component: AdminDashboard,
       meta: { layout: 'admin' }
+    },
+    {
+      path: 'users',
+      name: 'userManagement',
+      component: UserManagementView,
+      meta: { layout: 'admin'}
     }
   ]
 }

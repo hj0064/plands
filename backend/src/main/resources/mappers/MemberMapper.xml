@@ -62,4 +62,76 @@
         WHERE member_id = #{memberId}
     </select>
 
+    <select id="getMemberStat" resultType="com.plands.backend.dto.response.admin.member.MemberStatResponseDto">
+        SELECT
+            (SELECT COUNT(*) FROM member) as total_users,
+            (SELECT COUNT(*) FROM member WHERE status = 'ACTIVE') as active_users,
+            (SELECT COUNT(*) FROM member WHERE created_at >= CURDATE() - INTERVAL 7 DAY) AS new_users,
+            (SELECT COUNT(*) FROM plant) AS total_plants
+    </select>
+
+    <sql id="SearchWhere">
+        <where>
+            <if test="username != null and username != ''">
+                AND (name LIKE CONCAT('%', #{username}, '%')  OR nickname LIKE CONCAT('%', #{username}, '%'))
+            </if>
+            <if test="email != null and email != ''">
+                AND email LIKE CONCAT('%', #{email}, '%')
+            </if>
+            <if test="provider != null and provider != ''">
+                AND provider = #{provider}
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+            <if test="role != null and role != ''">
+                AND role = #{role}
+            </if>
+            <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+                AND created_at BETWEEN #{startDate} AND #{endDate}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getMemberCount" parameterType="com.plands.backend.dto.request.admin.member.MemberSearchRequestDto" resultType="int">
+        SELECT COUNT(*)
+        FROM member
+        <include refid="SearchWhere"/>
+    </select>
+
+    <select id="getMemberList" parameterType="com.plands.backend.dto.request.admin.member.MemberSearchRequestDto" resultType="com.plands.backend.dto.response.admin.member.MemberResponseDto">
+        SELECT member_id, name, email, nickname, provider, status, role, created_at
+        FROM member
+        <include refid="SearchWhere"/>
+        <choose>
+            <when test="sort == 'createdAt_desc'">
+                ORDER BY created_at DESC
+            </when>
+            <when test="sort == 'createdAt_asc'">
+                ORDER BY created_at ASC
+            </when>
+            <when test="sort == 'username_asc'">
+                ORDER BY name ASC
+            </when>
+            <when test="sort == 'username_desc'">
+                ORDER BY name DESC
+            </when>
+            <otherwise>
+                ORDER BY created_at DESC
+            </otherwise>
+        </choose>
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="getMemberDetail" resultType="com.plands.backend.dto.response.admin.member.MemberDetailResponseDto">
+        SELECT member_id, name, email, nickname, provider, role, status, created_at, updated_at, profile_image_url
+        FROM member
+        WHERE member_id = #{memberId}
+    </select>
+
+    <update id="updateMemberStatus" parameterType="com.plands.backend.dto.request.admin.member.UpdateMemberRequestDto">
+        UPDATE member
+        SET status = #{status}
+        WHERE member_id = #{memberId}
+    </update>
 </mapper>

@@ -6,7 +6,7 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
       </button>
-      <div class="search-container">
+      <div class="search-wrap">
         <input type="text" class="search-input" placeholder="Search...">
         <span class="search-icon">
           <svg class="icon-small" fill="currentColor" viewBox="0 0 20 20">
@@ -25,8 +25,15 @@
         <span class="notification-badge">3</span>
       </div>
       <div class="user-info">
-        <img class="user-avatar" src="https://via.placeholder.com/150" alt="User avatar">
-        <span class="user-name">K. Anderson</span>
+        <img
+          v-if="isLoggedIn"
+          :src="displayedProfileImage"
+          :key="displayedProfileImage"
+          alt="profile"
+          class="user-avatar"
+          @click="moveMypage"
+        />
+        <span class="user-name">{{ authStore.nickname }}</span>
       </div>
     </div>
   </header>
@@ -34,7 +41,26 @@
 
 <script setup>
 import { useLayoutStore } from '@/stores/layout'
+import { useAuthStore } from '@/stores/authStore.js'
+import { useRouter } from 'vue-router'
+import { computed } from 'vue'
+import defaultProfile from '@/assets/images/icon/profile-default.png'
+
 const layoutStore = useLayoutStore()
+const authStore = useAuthStore()
+const router = useRouter()
+
+const serverBaseUrl = 'http://localhost:8081'
+
+const isLoggedIn = computed(() => authStore.isLoggedIn)
+const profileImageUrl = computed(() => authStore.profileImageUrl)
+const displayedProfileImage = computed(() => {
+  if (profileImageUrl.value) {
+    return `${serverBaseUrl}${profileImageUrl.value}?t=${new Date().getTime()}`;
+  }
+  return defaultProfile;
+});
+
 </script>
 
 <style scoped>
@@ -70,7 +96,7 @@ const layoutStore = useLayoutStore()
   color: #4b5563;
 }
 
-.search-container {
+.search-wrap {
   position: relative;
   margin-left: 16px;
 }
