@@ -1,56 +1,82 @@
 <template>
-  <div>
-    <p></p>
-    <p></p>
-    <p></p>
-    <p></p>
-    <p></p>
-    <p></p>
-    calender
-    dfsfeafsdf
-    <my-calendar/>
+  <div class="calendar-view-container">
+    <h2>나의 일정</h2>
+    <div class="content-wrapper">
+      <div class="calendar-section">
+        <MyCalendar @date-selected="handleDateSelected" />
+      </div>
+      <div class="schedule-section">
+        <DailySchedule :selected-date="selectedDate" :events="filteredEvents" />
+      </div>
+    </div>
   </div>
 </template>
 
-<script>
-// 사용할 하위 컴포넌트들을 import 합니다.
+<script setup>
+import { ref, computed, onMounted } from 'vue';
 import MyCalendar from '@/components/my-calendar/MyCalendar.vue';
-// import EventModal from '@/components/EventModal.vue'; // 필요시
+import DailySchedule from '@/components/my-calendar/DailySchedule.vue';
 
-export default {
-  // 1. 컴포넌트 이름 (선택 사항이지만 유용)
-  name: 'CalendarView',
+const selectedDate = ref(new Date());
 
-  // 2. 이 컴포넌트 내에서 사용할 다른 컴포넌트들을 등록합니다.
-  components: {
-    MyCalendar,
-    // EventModal // 필요시
-  },
+const allEvents = ref([
+  { id: '1', title: '팀 미팅', date: '2025-06-26', time: '10:00 AM', description: '주간 업무 논의' },
+  { id: '2', title: '보고서 제출', date: '2025-06-26', time: '05:00 PM', description: '월간 보고서 마감' },
+  { id: '3', title: '운동하기', date: '2025-06-26', time: '07:00 PM' },
+  { id: '4', title: '친구와 저녁', date: '2025-06-27', time: '07:30 PM', description: '강남역 맛집' },
+  { id: '5', title: '병원 예약', date: '2025-06-28', time: '02:00 PM' },
+  { id: '6', title: 'FullCalendar 학습', date: '2025-06-29' },
+  { id: '7', 'title': '장보기', date: '2025-06-29' },
+]);
 
-  // 3. 컴포넌트의 반응형 데이터를 정의합니다. (함수여야 함)
-  data() {
-    return {
-      // CalendarView에서 전역적으로 관리할 상태가 있다면 여기에 정의
-      // 예: 전체 페이지의 로딩 상태 등
-      isLoading: false
-    };
-  },
+const filteredEvents = computed(() => {
+  const selectedDateStr = selectedDate.value.toISOString().split('T')[0];
+  return allEvents.value.filter(event => event.date === selectedDateStr);
+});
 
-  // 4. 컴포넌트의 메서드를 정의합니다.
-  methods: {
-    // CalendarView에서 직접적으로 처리할 메서드가 있다면 여기에 정의
-    // 예: 페이지 전체를 새로고침하는 기능
-    refreshPage() {
-      console.log('페이지 새로고침');
-    }
-  },
-
-  // 5. 컴포넌트가 DOM에 마운트된 후 실행될 코드
-  mounted() {
-    console.log('CalendarView가 마운트되었습니다.');
-    // 초기 데이터 로딩 등 페이지 로드 시 필요한 작업 수행
-  },
-
-  // 다른 옵션들 (computed, watch, props 등)도 필요에 따라 여기에 추가할 수 있습니다.
+const handleDateSelected = (dateInfo) => {
+  selectedDate.value = dateInfo.date;
+  console.log('CalendarView: 선택된 날짜:', selectedDate.value);
 };
+
+const refreshPage = () => {
+  console.log('CalendarView: 페이지 새로고침 로직 실행');
+};
+
+onMounted(() => {
+  console.log('CalendarView가 마운트되었습니다.');
+  refreshPage();
+});
 </script>
+
+<style scoped>
+.calendar-view-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #2c3e50;
+}
+
+.content-wrapper {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.calendar-section {
+  flex: 2;
+  min-width: 600px;
+  flex-grow: 1;
+}
+
+.schedule-section {
+  flex: 1;
+  min-width: 300px;
+  flex-grow: 1;
+}
+</style>

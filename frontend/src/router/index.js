@@ -65,7 +65,7 @@ const publicRoutes = [
     path: '/calendar',
     name: 'calendar',
     component: CalendarView,
-    meta: { layout: 'default', requiresAuth: true }
+    meta: { layout: 'default' }
   },
 ]
 
