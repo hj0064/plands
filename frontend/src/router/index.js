@@ -11,6 +11,7 @@ import NoticeListView from '@/views/NoticeListView.vue'
 import NoticeDetailView from '@/views/NoticeDetailView.vue'
 import AdminDashboard from '@/views/admin/AdminDashboard.vue'
 import UserManagementView from '@/views/admin/UserManagementView.vue'
+import NotFoundView from '@/views/NotFoundView.vue'
 
 const publicRoutes = [
   {
@@ -94,8 +95,29 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     ...publicRoutes,
-    adminRoutes
+    adminRoutes,
+    // 404 페이지 추가
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'notFound',
+      component: NotFoundView, // 또는 직접 컴포넌트 import
+      meta: { layout: 'default' }
+    }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore()
+  const token = authStore.token
+
+  const publicPaths = ['/', '/login', '/signup','/oauth2/redirect']
+  const isPublic = publicPaths.some(publicPath => to.path.startsWith(publicPath))
+
+  if (!token && !isPublic) {
+    return next('/login')
+  }
+
+  next()
 })
 
 export default router
