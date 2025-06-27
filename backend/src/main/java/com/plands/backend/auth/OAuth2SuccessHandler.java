@@ -2,7 +2,9 @@ package com.plands.backend.auth;
 
 import java.io.IOException;
 
+import com.plands.backend.dto.LoginHistoryDto;
 import com.plands.backend.dto.MemberDto;
+import com.plands.backend.mapper.MemberMapper;
 import com.plands.backend.service.MemberService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,13 +27,15 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
+    private final MemberMapper memberMapper;
     private final String REDIRECT_URI_PARAM_COOKIE_NAME = "redirect_uri";
     private static final Logger LOGGER = LoggerFactory.getLogger(OAuth2SuccessHandler.class);
 
     @Autowired
-    public OAuth2SuccessHandler(JwtTokenProvider jwtTokenProvider, @Lazy MemberService memberService) {
+    public OAuth2SuccessHandler(JwtTokenProvider jwtTokenProvider, @Lazy MemberService memberService, MemberMapper memberMapper) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.memberService = memberService;
+        this.memberMapper = memberMapper;
     }
 
     @Override
@@ -74,17 +78,31 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         MemberDto member = memberService.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("사용자 정보 없음"));
 
-        // 토큰 발급
+        // 로그인 기록 저장
+        LoginHistoryDto history = new LoginHistoryDto();
+        history.setMemberId(member.getMemberId());
+        history.setIpAddress(getClientIP(request));
+        history.setUserAgent(request.getHeader("User-Agent"));
+        memberMapper.insertLoginHistory(history);
+
         JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
 
-        // 사용자 정보 + 토큰을 리다이렉트 URI에 포함
-        return UriComponentsBuilder.fromUriString(targetUrl)
+        return UriComponentsBuilder.fromUriString(getDefaultTargetUrl())
                 .queryParam("accessToken", jwtToken.getAccessToken())
                 .queryParam("refreshToken", jwtToken.getRefreshToken())
                 .queryParam("memberId", member.getMemberId())
                 .queryParam("nickname", member.getNickname())
                 .queryParam("profileImageUrl", member.getProfileImageUrl())
-                .build().toUriString();
+                .build()
+                .toUriString();
+    }
+
+    private String getClientIP(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip != null && !ip.isEmpty()) {
+            return ip.split(",")[0].trim();
+        }
+        return request.getRemoteAddr();
     }
 
     protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {

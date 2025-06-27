@@ -17,7 +17,7 @@ public class MemberDetailResponseDto {
     private String provider;
     private String role;
     private String status;
-    private String createAt;
-    private String updateAt;
+    private String createdAt;
+    private String updatedAt;
     private String profileImageUrl;
 }

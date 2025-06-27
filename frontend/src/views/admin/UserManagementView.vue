@@ -87,16 +87,23 @@
     <UserList
       :users="members"
       @user-select="handleUserSelect"
-      @user-edit="handleUserEdit"
+    />
+    <!-- 사용자 상세보기 -->
+    <UserDetailModal
+      :is-open="isModalOpen"
+      :user="selectedUser"
+      @close="closeModal"
+      @save="handleSave"
     />
   </div>
 </template>
 
 <script setup>
-import { reactive, onMounted } from 'vue'
+import { reactive, onMounted, ref } from 'vue'
 import { useMemberApi } from '@/composables/useMemberApi.js'
 import UserFilter from '@/components/admin/user/UserFilter.vue'
 import UserList from '@/components/admin/user/UserList.vue'
+import UserDetailModal from '@/components/admin/user/UserDetailModal.vue'
 
 const {
   members,
@@ -105,13 +112,9 @@ const {
   loading,
   error,
   fetchMemberStats,
-  fetchMemberList
+  fetchMemberList,
+  fetchMemberDetail
 } = useMemberApi()
-
-onMounted(() => {
-  fetchMemberStats()
-  fetchMemberList(filters)
-})
 
 const filters = reactive({
   username: '',
@@ -124,6 +127,11 @@ const filters = reactive({
   endDate: ''
 })
 
+onMounted(() => {
+  fetchMemberStats()
+  fetchMemberList(filters)
+})
+
 function handleSearch(newFilters) {
   // UserFilter에서 emit한 필터 값을 반영
   for (const key in filters) {
@@ -132,12 +140,28 @@ function handleSearch(newFilters) {
   fetchMemberList(filters)
 }
 
-const handleUserSelect = (user) => {
-  alert(`${user.name} 사용자 상세보기`)
+const selectedUser = ref(null)
+const isModalOpen = ref(false)
+
+async function handleUserSelect(user) {
+  loading.value = true
+  try {
+    selectedUser.value = await fetchMemberDetail(user.memberId)
+    isModalOpen.value = true
+  } catch(e) {
+    error.value = e
+  } finally {
+    loading.value = false
+  }
+}
+function closeModal() {
+  isModalOpen.value = false
+  selectedUser.value = null
 }
 
-const handleUserEdit = (user) => {
-  alert(`${user.name} 사용자 편집`)
+function handleSave(payload) {
+  // 저장 처리
+  closeModal()
 }
 </script>
 

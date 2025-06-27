@@ -1,6 +1,7 @@
 package com.plands.backend.service;
 
 import com.plands.backend.auth.Role;
+import com.plands.backend.dto.LoginHistoryDto;
 import com.plands.backend.dto.MemberDto;
 import com.plands.backend.dto.request.admin.member.MemberSearchRequestDto;
 import com.plands.backend.dto.request.admin.member.UpdateMemberRequestDto;
@@ -101,6 +102,15 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Optional<MemberDto> findByEmail(String email) {
         return Optional.ofNullable(memberMapper.findByEmail(email));
+    }
+
+    @Override
+    public void saveLoginHistory(Long memberId, String ipAddress, String userAgent) {
+        LoginHistoryDto history = new LoginHistoryDto();
+        history.setMemberId(memberId);
+        history.setIpAddress(ipAddress);
+        history.setUserAgent(userAgent);
+        memberMapper.insertLoginHistory(history);
     }
 
     @Override

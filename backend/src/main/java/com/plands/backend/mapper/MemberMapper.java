@@ -1,5 +1,6 @@
 package com.plands.backend.mapper;
 
+import com.plands.backend.dto.LoginHistoryDto;
 import com.plands.backend.dto.MemberDto;
 import com.plands.backend.dto.request.admin.member.MemberSearchRequestDto;
 import com.plands.backend.dto.response.MemberProfileResponseDto;
@@ -24,6 +25,7 @@ public interface MemberMapper {
     MemberDto findByMemberName(String name);
     MemberDto findByEmail(String email);
     MemberDto findByProviderAndProviderId(@Param("provider") String provider, @Param("providerId") String providerId);
+    void insertLoginHistory(LoginHistoryDto loginHistory);
     int updateProfileImage(@Param("memberId") Long memberId, @Param("profileImageUrl") String profileImageUrl);
 
     // admin

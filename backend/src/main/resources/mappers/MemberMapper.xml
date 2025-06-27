@@ -62,6 +62,11 @@
         WHERE member_id = #{memberId}
     </select>
 
+    <insert id="insertLoginHistory" parameterType="com.plands.backend.dto.LoginHistoryDto">
+        INSERT INTO login_history (member_id, login_at, ip_address, user_agent)
+        VALUES (#{memberId}, NOW(),#{ipAddress}, #{userAgent})
+    </insert>
+
     <select id="getMemberStat" resultType="com.plands.backend.dto.response.admin.member.MemberStatResponseDto">
         SELECT
             (SELECT COUNT(*) FROM member) as total_users,

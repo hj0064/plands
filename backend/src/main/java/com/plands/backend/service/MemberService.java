@@ -21,6 +21,7 @@ public interface MemberService {
     MemberDto findByMemberName(String username);
     MemberDto findByProviderAndProviderId(String provider, String providerId);
     Optional<MemberDto> findByEmail(String email);
+    void saveLoginHistory(Long memberId, String ipAddress, String userAgent);
 
     MemberStatResponseDto getMemberStat();
     int getMemberCount(MemberSearchRequestDto requestDto);

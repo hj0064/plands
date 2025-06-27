@@ -46,6 +46,7 @@ export function useMemberApi() {
     error.value = null
     try {
       const res = await api.get(`/api/admin/member/${memberId}/profile`)
+      console.log(res.data)
       return res.data
     } catch (err) {
       error.value = err

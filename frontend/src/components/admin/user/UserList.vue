@@ -79,16 +79,6 @@
                   <circle cx="12" cy="12" r="3"></circle>
                 </svg>
               </button>
-              <button
-                class="action-btn edit-btn"
-                @click="$emit('user-edit', user)"
-                title="편집"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                </svg>
-              </button>
             </div>
           </td>
         </tr>
@@ -102,8 +92,11 @@
 </template>
 
 <script setup>
-import { computed, defineProps } from 'vue'
+import { computed, defineProps, ref } from 'vue'
 import { formatDate, statusToText, roleToText, providerToText } from '@/utils/formatUtils.js'
+
+const loading = ref(false)
+const error = ref(null)
 
 const props = defineProps({
   users: {

@@ -104,13 +104,17 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody MemberDto memberDto) {
+    public ResponseEntity<?> login(@RequestBody MemberDto memberDto, HttpServletRequest request) {
         MemberDto user = memberService.findByEmail(memberDto.getEmail())
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
         if (!memberService.matchesPassword(memberDto.getPassword(), user.getPassword())) {
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
+        // 로그인 기록 저장 위임
+        String ip = getClientIP(request);
+        String ua = request.getHeader("User-Agent");
+        memberService.saveLoginHistory(user.getMemberId(), ip, ua);
 
         UsernamePasswordAuthenticationToken authenticationToken = getAuthenticationToken(memberDto);
         JwtToken jwtToken = jwtTokenProvider.generateToken(authenticationToken);
@@ -122,6 +126,14 @@ public class AuthController {
             user.getRole().name()
         );
         return ResponseEntity.ok(response);
+    }
+
+    private String getClientIP(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip != null && !ip.isEmpty()) {
+            return ip.split(",")[0].trim();
+        }
+        return request.getRemoteAddr();
     }
 
     private static UsernamePasswordAuthenticationToken getAuthenticationToken(MemberDto memberDto) {
